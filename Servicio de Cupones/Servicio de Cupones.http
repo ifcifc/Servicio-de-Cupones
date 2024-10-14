@@ -1,0 +1,6 @@
+@Servicio_de_Cupones_HostAddress = http://localhost:5054
+
+GET {{Servicio_de_Cupones_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###
