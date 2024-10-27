@@ -12,19 +12,12 @@ using Microsoft.AspNetCore.Authorization;
 
 namespace AppCupones.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class CuponController : ControllerBase
+    
+    public class CuponController(DbAppContext context) : BaseController<CuponModel>(context)
     {
-        private readonly DbAppContext _context;
+        protected override bool Any(int id) => _context.Cupones.Any(e => e.Id_Cupon == id);
 
-        public CuponController(DbAppContext context)
-        {
-            _context = context;
-        }
-
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<CuponModel>>> GetAll()
+        public override async Task<ActionResult<IEnumerable<CuponModel>>> GetAll()
         {
             try
             {
@@ -43,11 +36,7 @@ namespace AppCupones.Controllers
             }
         }
 
-
-
-        [HttpGet("{Id_Cupon}")]
-
-        public async Task<IActionResult> GetByID(int Id_Cupon)
+        public override async Task<IActionResult> GetByID(int Id)
         {
             try
             {
@@ -55,60 +44,57 @@ namespace AppCupones.Controllers
                                         .Include(x => x.TipoCupon)
                                         .Include(x => x.CuponCategoria)
                                         .ThenInclude(x => x.Categoria)
-                                        .FirstOrDefaultAsync(x => x.Id_Cupon == Id_Cupon);
+                                        .FirstOrDefaultAsync(x => x.Id_Cupon == Id);
                 if (cuponModel is null)
                 {
-                    Log.Error($"Error en el endpoint <Cupon.GetByID, {Id_Cupon}>: El cupon no existe");
+                    Log.Error($"Error en el endpoint <Cupon.GetByID, {Id}>: El cupon no existe");
                     return NotFound("El cupon no existe");
                 }
 
-                Log.Information($"Se llamo al endpoint <Cupon.GetByID, {Id_Cupon}>");
+                Log.Information($"Se llamo al endpoint <Cupon.GetByID, {Id}>");
                 return Ok(cuponModel);
             }
             catch (Exception ex)
             {
-                Log.Error($"Error en el endpoint <Cupon.GetByID, {Id_Cupon}>: {ex.Message}");
+                Log.Error($"Error en el endpoint <Cupon.GetByID, {Id}>: {ex.Message}");
                 return BadRequest($"Hubo un error: {ex.Message}");
             }
         }
 
-
-        [HttpPost]
-        public async Task<IActionResult> Add(CuponModel cupon)
+        public override async Task<IActionResult> Add(CuponModel model)
         {
             try
             {
                 //Para evitar errores al crear el nuevo cupon
-                cupon.Id_Cupon = 0;
-                cupon.TipoCupon = null;
+                model.Id_Cupon = 0;
+                model.TipoCupon = null;
 
                 //Comprueba que el Tipo_Cupon exista
-                bool existeTipo_Cupon = await _context.Tipo_Cupon.AnyAsync(x => x.Id_Tipo_Cupon == cupon.Id_Tipo_Cupon);
+                bool existeTipo_Cupon = await _context.Tipo_Cupon.AnyAsync(x => x.Id_Tipo_Cupon == model.Id_Tipo_Cupon);
                 if (!existeTipo_Cupon)
                 {
-                    Log.Error($"Error en el endpoint <Cupon.Add, {cupon.ToString()}>: No existe el Tipo_Cupon asignado");
+                    Log.Error($"Error en el endpoint <Cupon.Add, {model.ToString()}>: No existe el Tipo_Cupon asignado");
                     return NotFound("No existe el Tipo de cupon asignado");
                 }
 
-                var entityEntry = _context.Cupones.Add(cupon);
+                var entityEntry = _context.Cupones.Add(model);
                 await _context.SaveChangesAsync();
 
-                Log.Information($"Se llamo al endpoint <cupon.Add, {cupon.ToString()}>");
-                return Ok(cupon);
+                Log.Information($"Se llamo al endpoint <cupon.Add, {model.ToString()}>");
+                return Ok(entityEntry);
             }
             catch (Exception ex)
             {
-                Log.Error($"Error en el endpoint <cupon.Add, {cupon.ToString()}>: {ex.Message}");
+                Log.Error($"Error en el endpoint <cupon.Add, {model.ToString()}>: {ex.Message}");
                 return BadRequest($"Hubo un error: {ex.Message}");
             }
         }
 
 
-        [HttpPut]
-        public async Task<IActionResult> Update(CuponModel cupon)
+        public override async Task<IActionResult> Update(CuponModel model)
         {
 
-            if (cupon is null)
+            if (model is null)
             {
                 Log.Error($"Error en el endpoint <Cupon.Update>: No se proporciono un cupon");
                 return BadRequest("No se proporciono un cupon");
@@ -117,46 +103,45 @@ namespace AppCupones.Controllers
             try
             {
                 //Any -> Devuelve true si encuentra un registro en la DB
-                bool cuponExiste = this.Any(cupon.Id_Cupon);
+                bool cuponExiste = this.Any(model.Id_Cupon);
                 if (!cuponExiste)
                 {
-                    Log.Error($"Error en el endpoint <Cupon.Update, {cupon.ToString()}>: El cupon no existe");
+                    Log.Error($"Error en el endpoint <Cupon.Update, {model.ToString()}>: El cupon no existe");
                     return NotFound("El cupon no existe");
                 }
 
 
                 //Comprueba que el Tipo_Cupon exista
-                bool existeRol = await _context.Tipo_Cupon.AnyAsync(x => x.Id_Tipo_Cupon == cupon.Id_Tipo_Cupon);
+                bool existeRol = await _context.Tipo_Cupon.AnyAsync(x => x.Id_Tipo_Cupon == model.Id_Tipo_Cupon);
                 if (!existeRol)
                 {
-                    Log.Error($"Error en el endpoint <Cupon.Update, {cupon.ToString()}>: No existe el Tipo_Cupon asignado");
+                    Log.Error($"Error en el endpoint <Cupon.Update, {model.ToString()}>: No existe el Tipo_Cupon asignado");
                     return NotFound("No existe el Tipo de cupon asignado");
                 }
 
-                _context.Cupones.Update(cupon);
+                _context.Cupones.Update(model);
 
                 await _context.SaveChangesAsync();
 
-                Log.Information($"Se llamo al endpoint <Cupon.Update, {cupon.ToString()}>");
+                Log.Information($"Se llamo al endpoint <Cupon.Update, {model.ToString()}>");
                 return Ok("Cupon modificado correctamente");
             }
             catch (Exception ex)
             {
-                Log.Error($"Error en el endpoint <Cupon.Update, {cupon.ToString()}>: {ex.Message}");
+                Log.Error($"Error en el endpoint <Cupon.Update, {model.ToString()}>: {ex.Message}");
                 return BadRequest($"Hubo un error: {ex.Message}");
             }
         }
 
-        [HttpDelete("{Id_Cupon}")]
-        public async Task<IActionResult> Delete(int Id_Cupon)
+        public override async Task<IActionResult> Delete(int Id)
         {
             try
             {
-                CuponModel? cupon = await _context.Cupones.FindAsync(Id_Cupon);
+                CuponModel? cupon = await _context.Cupones.FindAsync(Id);
 
                 if (cupon is null)
                 {
-                    Log.Error($"Error en el endpoint <Cupon.Delete, {Id_Cupon}>: El cupon no existe");
+                    Log.Error($"Error en el endpoint <Cupon.Delete, {Id}>: El cupon no existe");
                     return BadRequest("El cupon no existe");
                 }
 
@@ -164,19 +149,17 @@ namespace AppCupones.Controllers
 
                 await _context.SaveChangesAsync();
 
-                Log.Information($"Se llamo al endpoint <Cupon.Delete, {Id_Cupon}>");
+                Log.Information($"Se llamo al endpoint <Cupon.Delete, {Id}>");
                 return Ok("Cupon eliminado correctamente");
             }
             catch (Exception ex)
             {
-                Log.Error($"Error en el endpoint <Cupon.Delete, {Id_Cupon}>: {ex.Message}");
+                Log.Error($"Error en el endpoint <Cupon.Delete, {Id}>: {ex.Message}");
                 return BadRequest($"Hubo un error: {ex.Message}");
             }
         }
 
-        private bool Any(int id)
-        {
-            return _context.Cupones.Any(e => e.Id_Cupon == id);
-        }
+        
+
     }
 }

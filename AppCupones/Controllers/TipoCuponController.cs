@@ -1,108 +1,124 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿using AppCupones.Data;
 using AppCupones.Data;
 using AppCupones.Models;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.EntityFrameworkCore.ChangeTracking;
+using Serilog;
+using System.Runtime.InteropServices;
 
 namespace AppCupones.Controllers
 {
-    [Route("api/[controller]")]
-    [ApiController]
-    public class TipoCuponController : ControllerBase
+    public class TipoCuponController(DbAppContext context) : BaseController<TipoCuponModel>(context)
     {
-        private readonly DbAppContext _context;
-
-        public TipoCuponController(DbAppContext context)
+        protected override bool Any(int id) => _context.Tipo_Cupon.Any(e => e.Id_Tipo_Cupon == id);
+        public override async Task<IActionResult> Add(TipoCuponModel model)
         {
-            _context = context;
-        }
-
-        // GET: api/TipoCupon
-        [HttpGet]
-        public async Task<ActionResult<IEnumerable<TipoCuponModel>>> GetTipo_Cupon()
-        {
-            return await _context.Tipo_Cupon.ToListAsync();
-        }
-
-        // GET: api/TipoCupon/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<TipoCuponModel>> GetTipoCuponModel(int id)
-        {
-            var tipoCuponModel = await _context.Tipo_Cupon.FindAsync(id);
-
-            if (tipoCuponModel == null)
-            {
-                return NotFound();
-            }
-
-            return tipoCuponModel;
-        }
-
-        // PUT: api/TipoCupon/5
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPut("{id}")]
-        public async Task<IActionResult> PutTipoCuponModel(int id, TipoCuponModel tipoCuponModel)
-        {
-            if (id != tipoCuponModel.Id_Tipo_Cupon)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(tipoCuponModel).State = EntityState.Modified;
+            model.Id_Tipo_Cupon = 0;
 
             try
             {
+                var entityEntry = await _context.Tipo_Cupon.AddAsync(model);
                 await _context.SaveChangesAsync();
+
+                Log.Information($"Se llamo al endpoint <TipoCupon.Add, {model.ToString()}>");
+                return Ok(model);
             }
-            catch (DbUpdateConcurrencyException)
+            catch (Exception ex)
             {
-                if (!TipoCuponModelExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
+                Log.Error($"Error en el endpoint <TipoCupon.Add, {model.ToString()}>: {ex.Message}");
+                return BadRequest($"Hubo un error: {ex.Message}");
             }
-
-            return NoContent();
         }
-
-        // POST: api/TipoCupon
-        // To protect from overposting attacks, see https://go.microsoft.com/fwlink/?linkid=2123754
-        [HttpPost]
-        public async Task<ActionResult<TipoCuponModel>> PostTipoCuponModel(TipoCuponModel tipoCuponModel)
+        public override async Task<IActionResult> Delete(int Id)
         {
-            _context.Tipo_Cupon.Add(tipoCuponModel);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetTipoCuponModel", new { id = tipoCuponModel.Id_Tipo_Cupon }, tipoCuponModel);
-        }
-
-        // DELETE: api/TipoCupon/5
-        [HttpDelete("{id}")]
-        public async Task<IActionResult> DeleteTipoCuponModel(int id)
-        {
-            var tipoCuponModel = await _context.Tipo_Cupon.FindAsync(id);
-            if (tipoCuponModel == null)
+            try
             {
-                return NotFound();
+                var tc = await _context.Tipo_Cupon.FindAsync(Id);
+
+                if (tc is null)
+                {
+                    Log.Error($"Error en el endpoint <TipoCupon.Delete, {Id}>: El tipo de cupon no existe");
+                    return BadRequest("El tipo de cupon no existe");
+                }
+
+                _context.Tipo_Cupon.Remove(tc);
+
+                await _context.SaveChangesAsync();
+
+                Log.Information($"Se llamo al endpoint <TipoCupon.Delete, {Id}>");
+                return Ok("Tipo de cupon eliminado correctamente");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error en el endpoint <TipoCupon.Delete, {Id}>: {ex.Message}");
+                return BadRequest($"Hubo un error: {ex.Message}");
+            }
+        }
+        public override async Task<ActionResult<IEnumerable<TipoCuponModel>>> GetAll()
+        {
+            try
+            {
+                var tc = await _context.Tipo_Cupon.ToListAsync();
+                Log.Information("Se llamo al endpoint <TipoCupon.GetAll>");
+                return Ok(tc);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error en el endpoint <TipoCupon.GetAll>: {ex.Message}");
+                return BadRequest($"Hubo un error: {ex.Message}");
+            }
+        }
+        public override async Task<IActionResult> GetByID(int Id)
+        {
+            try
+            {
+                var tc = await _context.Tipo_Cupon.AsNoTracking().FirstOrDefaultAsync(x => x.Id_Tipo_Cupon == Id);
+                if (tc is null)
+                {
+                    Log.Error($"Error en el endpoint <TipoCupon.GetByID, {Id}>: El tipo de cupon no existe");
+                    return NotFound("El tipo de tipo de cupon no existe");
+                }
+
+                Log.Information($"Se llamo al endpoint <TipoCupon.GetByID, {Id}>");
+
+                return Ok(tc);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error en el endpoint <TipoCupon.GetByID, {Id}>: {ex.Message}");
+                return BadRequest($"Hubo un error: {ex.Message}");
+            }
+        }
+        public override async Task<IActionResult> Update(TipoCuponModel model)
+        {
+            if (model is null)
+            {
+                Log.Error($"Error en el endpoint <TipoCupon.Update>: No se proporciono un cupon");
+                return BadRequest("No se proporciono un cupon");
             }
 
-            _context.Tipo_Cupon.Remove(tipoCuponModel);
-            await _context.SaveChangesAsync();
+            try
+            {
+                //Any -> Devuelve true si encuentra un registro en la DB
+                bool cuponExiste = this.Any(model.Id_Tipo_Cupon);
+                if (!cuponExiste)
+                {
+                    Log.Error($"Error en el endpoint <TipoCupon.Update, {model.ToString()}>: El tipo de cupon no existe");
+                    return NotFound("El tipo de cupon no existe");
+                }
+                _context.Tipo_Cupon.Update(model);
 
-            return NoContent();
-        }
+                await _context.SaveChangesAsync();
 
-        private bool TipoCuponModelExists(int id)
-        {
-            return _context.Tipo_Cupon.Any(e => e.Id_Tipo_Cupon == id);
+                Log.Information($"Se llamo al endpoint <TipoCupon.Update, {model.ToString()}>");
+                return Ok("Cupon modificado correctamente");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error en el endpoint <TipoCupon.Update, {model.ToString()}>: {ex.Message}");
+                return BadRequest($"Hubo un error: {ex.Message}");
+            }
         }
     }
 }

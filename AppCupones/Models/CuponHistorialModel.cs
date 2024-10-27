@@ -12,9 +12,13 @@ namespace AppCupones.Models
         public DateTime FechaUso { get; set; }
         public string CodCliente { get; set; }
 
+        //Redundante Ya se puede acceder al cupon desde cliente
+        /*[ForeignKey("Id_Cupon")]
+        public virtual CuponModel? Cupon { get; private set; }*/
 
-        [ForeignKey("Id_Cupon")]
-        public virtual CuponModel? Cupon { get; set; }
+
+        [ForeignKey("NroCupon")]
+        public virtual CuponClienteModel? Cliente { get; set; }
     }
 
 }

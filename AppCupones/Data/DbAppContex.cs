@@ -13,7 +13,7 @@ namespace AppCupones.Data
         public DbSet<CuponCategoriaModel> Cupones_Categorias { get; set; }
         public DbSet<CuponClienteModel> Cupones_Clientes { get; set; }
         public DbSet<CuponDetalleModel> Cupones_Detalle { get; set; }
-        public DbSet<CuponHistorialModel> CuponHistorial { get; set; }
+        public DbSet<CuponHistorialModel> Cupones_Historial { get; set; }
         public DbSet<PrecioModel> Precios { get; set; }
         public DbSet<CuponModel> Cupones { get; set; }
         public DbSet<TipoCuponModel> Tipo_Cupon { get; set; }
