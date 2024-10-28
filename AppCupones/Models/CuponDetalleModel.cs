@@ -11,12 +11,12 @@ namespace AppCupones.Models
         public int Id_Articulo { get; set; }
         public int Cantidad { get; set; }
 
-        /*
-        [ForeignKey("Id_Cupon")]
+        
+        /*[ForeignKey("Id_Cupon")]
         public virtual CuponModel? Cupon { get; set; }
-
+        */
         [ForeignKey("Id_Articulo")]
-        public virtual ArticuloModel? Articulo { get; set; }*/
+        public virtual ArticuloModel? Articulo { get; set; }
     }
 
 }
