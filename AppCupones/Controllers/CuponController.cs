@@ -118,7 +118,7 @@ namespace AppCupones.Controllers
                     Log.Error($"Error en el endpoint <Cupon.Update, {model.ToString()}>: No existe el Tipo_Cupon asignado");
                     return NotFound("No existe el Tipo de cupon asignado");
                 }
-
+                model.TipoCupon = null;
                 _context.Cupones.Update(model);
 
                 await _context.SaveChangesAsync();
