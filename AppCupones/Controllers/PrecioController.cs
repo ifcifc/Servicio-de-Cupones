@@ -19,7 +19,14 @@ namespace AppCupones.Controllers
 
             try
             {
-                var entityEntry = await _context.Precios.AddAsync(model);
+                /*//Remueve el precio para el articulo si ya existe
+                if (_context.Precios.Any(x => x.Id_Articulo == model.Id_Articulo))
+                {
+                    var p = await _context.Precios.FirstAsync(x => x.Id_Articulo == model.Id_Articulo);
+                    _context.Precios.Remove(p);
+                }*/
+
+                await _context.Precios.AddAsync(model);
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <Precio.Add, {model.ToString()}>");
@@ -43,7 +50,9 @@ namespace AppCupones.Controllers
                     return BadRequest("El precio no existe");
                 }
 
-                _context.Precios.Remove(tc);
+                //_context.Precios.Remove(tc);
+
+                tc.Precio = 0;
 
                 await _context.SaveChangesAsync();
 

@@ -4,6 +4,10 @@ using AppCupones.Data;
 using System;
 using System.Security.Cryptography.Xml;
 using System.Text.Json.Serialization;
+using AppCupones.Services;
+using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.IdentityModel.Tokens;
+using System.Text;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DbAppContext>(options => {
@@ -22,7 +26,30 @@ Log.Logger = new LoggerConfiguration()
     .CreateLogger();
 #endregion
 
+#region Services
+builder.Services.AddScoped<HashPasswordService>();
+builder.Services.AddScoped<JwtTokenService>();
+#endregion
 
+#region Authentication
+builder.Services.AddAuthentication(options =>
+{
+    options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
+    options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
+}).AddJwtBearer(options => {
+    options.SaveToken = true;
+    options.TokenValidationParameters = new Microsoft.IdentityModel.Tokens.TokenValidationParameters
+    {
+        ValidateIssuer = false,
+        ValidateAudience = false,
+        ValidateLifetime = true,
+        ValidateIssuerSigningKey = true,
+        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:key"]))
+    };
+});
+#endregion
+
+#region JsonOptions
 // Add services to the container.
 builder.Services.AddControllers()
                 //Para evitar las referencia ciclicas en los modelos.
@@ -30,7 +57,9 @@ builder.Services.AddControllers()
                     options.JsonSerializerOptions.ReferenceHandler = ReferenceHandler.IgnoreCycles;
                     options.JsonSerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 });
+#endregion
 
+#region Default
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -51,3 +80,4 @@ app.UseAuthorization();
 app.MapControllers();
 
 app.Run();
+#endregion

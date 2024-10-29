@@ -9,6 +9,7 @@ using AppCupones.Data;
 using AppCupones.Models;
 using Serilog;
 using Microsoft.AspNetCore.Authorization;
+using System.Runtime.InteropServices;
 
 namespace AppCupones.Controllers
 {
@@ -159,7 +160,70 @@ namespace AppCupones.Controllers
             }
         }
 
-        
+        [HttpPost("AsignarCupon/{Id_Cupon}, {CodCliente}")]
+        public async Task<IActionResult> AsignarCupon(int Id_Cupon, string CodCliente)
+        {
+            try
+            {
+                if (!this.Any(Id_Cupon))
+                {
+                    Log.Error($"Error en el endpoint <Cupon.AsignarCupon, [{Id_Cupon}, {CodCliente}]>: El cupon no existe");
+                    return BadRequest("El cupon no existe");
+                }
+
+                var cc = new CuponClienteModel()
+                {
+                    Id_Cupon = Id_Cupon,
+                    CodCliente = CodCliente,
+                    FechaAsignado = DateTime.Now,
+                    NroCupon = Guid.NewGuid().ToString().Substring(1, 12)//Deberia de remplazarse por algun generador de NrCupon
+                };
+
+                await _context.Cupones_Clientes.AddAsync(cc);
+                await _context.SaveChangesAsync();
+                Log.Information($"Se llamo al endpoint <Cupon.AsignarCupon, [{Id_Cupon}, {CodCliente}]>");
+                return Ok(cc);
+            }catch (Exception ex)
+            {
+                Log.Error($"Error en el endpoint <Cupon.AsignarCupon, [{Id_Cupon}, {CodCliente}]>: {ex.Message}");
+                return BadRequest($"Hubo un error: {ex.Message}");
+            }
+            
+        }
+
+        [HttpPost("QuemarCupon/{NroCupon}")]
+        public async Task<IActionResult> QuemarCupon(string NroCupon) 
+        {
+            try
+            { 
+                var any = await _context.Cupones_Clientes.AnyAsync(x => x.NroCupon == NroCupon);
+                if (!any)
+                {
+                    Log.Error($"Error en el endpoint <Cupon.QuemarCupon, {NroCupon}>: El Nro cupon no existe");
+                    return BadRequest("El Nro cupon no existe");
+                }
+
+                var cc = await _context.Cupones_Clientes.FirstAsync(x=>x.NroCupon==NroCupon);
+
+                await _context.Cupones_Historial.AddAsync(new CuponHistorialModel() { 
+                    Id_Cupon = cc.Id_Cupon,
+                    NroCupon = cc.NroCupon,
+                    FechaUso = DateTime.Now,
+                    CodCliente = cc.CodCliente
+                });
+
+                //_context.Cupones_Clientes.Remove(cc);
+                await _context.SaveChangesAsync();
+
+                Log.Information($"Se llamo al endpoint <Cupon.QuemarCupon,{NroCupon}>");
+                return Ok("El cupon a sido quemado");
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error en el endpoint <Cupon.AsignarCupon, {NroCupon}>: {ex.Message}");
+                return BadRequest($"Hubo un error: {ex.Message}");
+            }
+        }
 
     }
 }

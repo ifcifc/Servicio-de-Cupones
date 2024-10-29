@@ -1,6 +1,7 @@
 ﻿using AppCupones.Data;
 using AppCupones.Data;
 using AppCupones.Models;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
@@ -9,6 +10,7 @@ using System.Runtime.InteropServices;
 
 namespace AppCupones.Controllers
 {
+    [Authorize]
     public class TipoCuponController(DbAppContext context) : BaseController<TipoCuponModel>(context)
     {
         protected override bool Any(int id) => _context.Tipo_Cupon.Any(e => e.Id_Tipo_Cupon == id);
