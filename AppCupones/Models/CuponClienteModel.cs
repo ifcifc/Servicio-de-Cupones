@@ -7,12 +7,13 @@ namespace AppCupones.Models
     {
         [Key]
         public string NroCupon { get; set; }
-        [ForeignKey("Id_Cupon")]
         public int Id_Cupon { get; set; }
         public DateTime FechaAsignado { get; set; }
         public string CodCliente { get; set; }
 
 
+
+        [ForeignKey("Id_Cupon")]
         public virtual CuponModel? Cupon { get; set; }
     }
 

@@ -37,6 +37,7 @@ namespace AppCupones.Data
             //Para definir las keys
             modelBuilder.Entity<CuponDetalleModel>().HasKey(x => new { x.Id_Cupon, x.Id_Articulo});
             modelBuilder.Entity<CuponHistorialModel>().HasKey(x => new { x.Id_Cupon, x.NroCupon });
+            modelBuilder.Entity<CuponClienteModel>().HasKey(x => x.NroCupon);
 
             base.OnModelCreating(modelBuilder);
         }

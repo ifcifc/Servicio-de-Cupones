@@ -48,7 +48,7 @@ namespace AppCupones.Controllers
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <Precio.Delete, {Id}>");
-                return Ok("Tipo de cupon eliminado correctamente");
+                return Ok("Precio eliminado correctamente");
             }
             catch (Exception ex)
             {
@@ -60,7 +60,9 @@ namespace AppCupones.Controllers
         {
             try
             {
-                var tc = await _context.Precios.ToListAsync();
+                var tc = await _context.Precios
+                    .Include(x=>x.Articulo)
+                    .ToListAsync();
                 Log.Information("Se llamo al endpoint <Precio.GetAll>");
                 return Ok(tc);
             }
@@ -74,11 +76,13 @@ namespace AppCupones.Controllers
         {
             try
             {
-                var tc = await _context.Precios.AsNoTracking().FirstOrDefaultAsync(x => x.Id_Precio == Id);
+                var tc = await _context.Precios.AsNoTracking()
+                    .Include(x => x.Articulo)
+                    .FirstOrDefaultAsync(x => x.Id_Precio == Id);
                 if (tc is null)
                 {
                     Log.Error($"Error en el endpoint <Precio.GetByID, {Id}>: El precio no existe");
-                    return NotFound("El tipo de precio no existe");
+                    return NotFound("El precio no existe");
                 }
 
                 Log.Information($"Se llamo al endpoint <Precio.GetByID, {Id}>");

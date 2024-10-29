@@ -16,7 +16,7 @@ namespace AppCupones.Models
         /*[ForeignKey("Id_Cupon")]
         public virtual CuponModel? Cupon { get; private set; }*/
 
-
+        
         [ForeignKey("NroCupon")]
         public virtual CuponClienteModel? Cliente { get; set; }
     }
