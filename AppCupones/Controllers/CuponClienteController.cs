@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Serilog;
 using System.Runtime.InteropServices;
+using Common.Controllers;
 
 namespace AppCupones.Controllers
 {
-    public class CuponClienteController(DbAppContext context) : BaseController<CuponClienteModel>(context)
+    public class CuponClienteController(DbAppContext context) : BaseController<CuponClienteModel, DbAppContext>(context)
     {
         protected override bool Any(int id) => _context.Cupones_Clientes.Any(e => e.Id_Cupon == id);
         private bool Any(string NroCupon) => _context.Cupones_Clientes.Any(e => e.NroCupon == NroCupon);

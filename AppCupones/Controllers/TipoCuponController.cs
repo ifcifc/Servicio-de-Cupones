@@ -7,11 +7,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Serilog;
 using System.Runtime.InteropServices;
+using Common.Controllers;
 
 namespace AppCupones.Controllers
 {
-    [Authorize]
-    public class TipoCuponController(DbAppContext context) : BaseController<TipoCuponModel>(context)
+    //[Authorize]
+    public class TipoCuponController(DbAppContext context) : BaseController<TipoCuponModel, DbAppContext>(context)
     {
         protected override bool Any(int id) => _context.Tipo_Cupon.Any(e => e.Id_Tipo_Cupon == id);
         public override async Task<IActionResult> Add(TipoCuponModel model)

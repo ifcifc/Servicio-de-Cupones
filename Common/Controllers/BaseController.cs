@@ -1,16 +1,16 @@
-﻿using AppCupones.Data;
-using AppCupones.Models;
+﻿using Common.Models;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
-namespace AppCupones.Controllers
+namespace Common.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public abstract class BaseController<T> : ControllerBase where T : Model
+    public abstract class BaseController<T, V> : ControllerBase where T : Model where V : DbContext
     {
-        protected readonly DbAppContext _context;
+        protected readonly V _context;
 
-        public BaseController(DbAppContext context)
+        public BaseController(V context)
         {
             _context = context;
         }

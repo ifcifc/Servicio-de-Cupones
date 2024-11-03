@@ -3,6 +3,7 @@ using AppCupones.Models;
 using AppCupones.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Common.Controllers;
 
 namespace AppCupones.Controllers
 {

@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Serilog;
 using System.Runtime.InteropServices;
+using Common.Controllers;
 
 namespace AppCupones.Controllers
 {
-    public class CuponHistorialController(DbAppContext context) : BaseController<CuponHistorialModel>(context)
+    public class CuponHistorialController(DbAppContext context) : BaseController<CuponHistorialModel, DbAppContext>(context)
     {
         protected override bool Any(int id) => _context.Cupones_Historial.Any(e => e.Id_Cupon == id);
         private bool Any(int Id_Cupon, string NroCupon) => _context.Cupones_Historial.Any(e => e.Id_Cupon == Id_Cupon && e.NroCupon == NroCupon);
@@ -167,7 +168,7 @@ namespace AppCupones.Controllers
                 if (tc is null)
                 {
                     Log.Error($"Error en el endpoint <CuponHistorial.Delete, [{Id_Cupon}, {NroCupon}]>: El cupon historial no existe");
-                    return BadRequest("El tipo de cupon no existe");
+                    return BadRequest("El cupon historial no existe");
                 }
 
                 _context.Cupones_Historial.Remove(tc);

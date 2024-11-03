@@ -1,15 +1,12 @@
 ﻿using AppCupones.Data;
-using AppCupones.Data;
 using AppCupones.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Serilog;
-using System.Runtime.InteropServices;
-
+using Common.Controllers;
 namespace AppCupones.Controllers
 {
-    public class ArticuloController(DbAppContext context) : BaseController<ArticuloModel>(context)
+    public class ArticuloController(DbAppContext context) : BaseController<ArticuloModel, DbAppContext>(context)
     {
         protected override bool Any(int id) => _context.Articulos.Any(e => e.Id_Articulo == id);
         public override async Task<IActionResult> Add(ArticuloModel model)
@@ -47,7 +44,7 @@ namespace AppCupones.Controllers
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <Articulo.Delete, {Id}>");
-                return Ok("Tipo de cupon eliminado correctamente");
+                return Ok("Articulo eliminado correctamente");
             }
             catch (Exception ex)
             {

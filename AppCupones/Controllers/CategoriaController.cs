@@ -3,10 +3,11 @@ using AppCupones.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
+using Common.Controllers;
 
 namespace AppCupones.Controllers
 {
-    public class CategoriaController(DbAppContext context) : BaseController<CategoriaModel>(context)
+    public class CategoriaController(DbAppContext context) : BaseController<CategoriaModel, DbAppContext>(context)
     {
         protected override bool Any(int id) => _context.Categorias.Any(e => e.Id_Categoria == id);
         public override async Task<IActionResult> Add(CategoriaModel model)
@@ -37,8 +38,8 @@ namespace AppCupones.Controllers
 
                 if (tc is null)
                 {
-                    Log.Error($"Error en el endpoint <Categoria.Delete, {Id}>: El tipo de cupon no existe");
-                    return BadRequest("El tipo de cupon no existe");
+                    Log.Error($"Error en el endpoint <Categoria.Delete, {Id}>: El categoria no existe");
+                    return BadRequest("El categoria no existe");
                 }
 
                 _context.Categorias.Remove(tc);
@@ -46,7 +47,7 @@ namespace AppCupones.Controllers
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <Categoria.Delete, {Id}>");
-                return Ok("Tipo de cupon eliminado correctamente");
+                return Ok("categoria eliminado correctamente");
             }
             catch (Exception ex)
             {
@@ -77,8 +78,8 @@ namespace AppCupones.Controllers
                 var tc = await _context.Categorias.AsNoTracking().FirstOrDefaultAsync(x => x.Id_Categoria == Id);
                 if (tc is null)
                 {
-                    Log.Error($"Error en el endpoint <Categoria.GetByID, {Id}>: El tipo de cupon no existe");
-                    return NotFound("El tipo de tipo de cupon no existe");
+                    Log.Error($"Error en el endpoint <Categoria.GetByID, {Id}>: El categoria no existe");
+                    return NotFound("El tipo de categoria no existe");
                 }
 
                 Log.Information($"Se llamo al endpoint <Categoria.GetByID, {Id}>");
@@ -106,8 +107,8 @@ namespace AppCupones.Controllers
                 bool cuponExiste = this.Any(model.Id_Categoria);
                 if (!cuponExiste)
                 {
-                    Log.Error($"Error en el endpoint <Categoria.Update, {model.ToString()}>: El tipo de cupon no existe");
-                    return NotFound("El tipo de cupon no existe");
+                    Log.Error($"Error en el endpoint <Categoria.Update, {model.ToString()}>: El categoria no existe");
+                    return NotFound("El categoria no existe");
                 }
                 _context.Categorias.Update(model);
 

@@ -6,10 +6,11 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Serilog;
 using System.Runtime.InteropServices;
+using Common.Controllers;
 
 namespace AppCupones.Controllers
 {
-    public class CuponCategoriaController(DbAppContext context) : BaseController<CuponCategoriaModel>(context)
+    public class CuponCategoriaController(DbAppContext context) : BaseController<CuponCategoriaModel, DbAppContext>(context)
     {
         protected override bool Any(int id) => _context.Cupones_Categorias.Any(e => e.Id_Cupones_Categorias == id);
         public override async Task<IActionResult> Add(CuponCategoriaModel model)

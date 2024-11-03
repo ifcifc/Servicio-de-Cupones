@@ -2,11 +2,11 @@
 using System.ComponentModel;
 using System.Text;
 
-namespace AppCupones.Models
+namespace Common.Models
 {
     public class Model
     {
-        //Tomado del proyecto del anterior cuatrimestre https://github.com/ifcifc/GestorDespedidasDeSolteroGrupo3/blob/main/GestorEventos.Servicios/Entidades/Entidad.cs
+        //Codigo duplicado, pero la opcion mas sensilla
         //Muestra el contenido de la entidad
         public string ToString()
         {

@@ -1,4 +1,5 @@
-﻿using System.ComponentModel;
+﻿using Common.Models;
+using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
 namespace AppCupones.Models
