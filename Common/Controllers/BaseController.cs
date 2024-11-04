@@ -1,12 +1,15 @@
 ﻿using Common.Models;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Serilog;
+using System.Reflection;
 
 namespace Common.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public abstract class BaseController<T, V> : ControllerBase where T : Model where V : DbContext
+    public abstract class BaseController<T, V> : ControllerBase where T : Model, new() where V : DbContext
     {
         protected readonly V _context;
 
