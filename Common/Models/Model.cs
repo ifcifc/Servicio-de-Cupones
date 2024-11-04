@@ -6,7 +6,6 @@ namespace Common.Models
 {
     public class Model
     {
-        //Codigo duplicado, pero la opcion mas sensilla
         //Muestra el contenido de la entidad
         public string ToString()
         {

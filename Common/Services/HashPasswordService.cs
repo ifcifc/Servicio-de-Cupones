@@ -1,8 +1,7 @@
-﻿using NuGet.Common;
-using System.Security.Cryptography;
+﻿using System.Security.Cryptography;
 using System.Text;
 
-namespace AppCupones.Services
+namespace Common.Services
 {
     public class HashPasswordService
     {

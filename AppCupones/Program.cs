@@ -8,6 +8,7 @@ using AppCupones.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
+using Common.Services;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DbAppContext>(options => {
@@ -29,6 +30,7 @@ Log.Logger = new LoggerConfiguration()
 #region Services
 builder.Services.AddScoped<HashPasswordService>();
 builder.Services.AddScoped<JwtTokenService>();
+builder.Services.AddScoped<GenerateCuponService>();
 #endregion
 
 #region Authentication
