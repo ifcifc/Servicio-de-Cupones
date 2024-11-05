@@ -1,5 +1,7 @@
 ﻿using Common.Models;
 using Newtonsoft.Json;
+using Serilog;
+using System.Net.Http;
 using System.Text;
 
 namespace Common.Services
@@ -13,18 +15,27 @@ namespace Common.Services
             this.apiUrl = apiUrl;
         }
 
-        public async Task<HttpResponseMessage> FromApi<T>(string api, T model) where T : Model
+        public async Task<HttpResponseMessage> FromApi<T>(string api, T model)
         {
             var json = JsonConvert.SerializeObject(model);
-
-            return await FromApi(api, json);
+            StringContent stringContent = new StringContent(json, Encoding.UTF8, "application/json");
+            HttpClient httpClient = new HttpClient();
+            return await httpClient.PostAsync($"{apiUrl}/api/{api}", stringContent);
         }
 
-        public async Task<HttpResponseMessage> FromApi(string api, string str)
+
+        public async Task<HttpResponseMessage> FromApi(string api)
         {
-            StringContent stringContent = new StringContent(str, Encoding.UTF8, "application/json");
             HttpClient httpClient = new HttpClient();
-            return await httpClient.PostAsync($"{apiUrl}/api/{api}/", stringContent);
+            HttpResponseMessage httpResponseMessage = await httpClient.PostAsync($"{apiUrl}/api/{api}", null);
+            return httpResponseMessage;
+        }
+
+        public async Task<HttpResponseMessage> FromApiGet(string api)
+        {
+            HttpClient httpClient = new HttpClient();
+            HttpResponseMessage httpResponseMessage = await httpClient.GetAsync($"{apiUrl}/api/{api}");
+            return httpResponseMessage;
         }
     }
 }

@@ -16,7 +16,7 @@ namespace AppCupones.Controllers
         private bool Any(int Id_Cupon, string NroCupon) => _context.Cupones_Historial.Any(e => e.Id_Cupon == Id_Cupon && e.NroCupon == NroCupon);
         public override async Task<IActionResult> Add(CuponHistorialModel model)
         {
-            model.Cliente = null;
+            //model.Cliente = null;
             model.FechaUso = DateTime.Now;
             try
             {
@@ -39,7 +39,7 @@ namespace AppCupones.Controllers
             try
             {
                 var tc = await _context.Cupones_Historial
-                    .Include(x=>x.Cliente)
+                    //.Include(x=>x.Cliente)
                     .ToListAsync();
                 Log.Information("Se llamo al endpoint <CuponHistorial.GetAll>");
                 return Ok(tc);
@@ -56,7 +56,7 @@ namespace AppCupones.Controllers
             try
             {
                 var tc = await _context.Cupones_Historial.Where(x => x.NroCupon == NroCupon)
-                    .Include(x => x.Cliente)
+                    //.Include(x => x.Cliente)
                     .ToListAsync();
                 Log.Information($"Se llamo al endpoint <CuponHistorial.GetByNroCupon, {NroCupon}>");
                 return Ok(tc);
@@ -74,7 +74,7 @@ namespace AppCupones.Controllers
             try
             {
                 var tc = await _context.Cupones_Historial.Where(x => x.Id_Cupon == Id_Cupon)
-                    .Include(x => x.Cliente)
+                    //.Include(x => x.Cliente)
                     .ToListAsync();
                 Log.Information($"Se llamo al endpoint <CuponHistorial.GetByIdCupon, {Id_Cupon}>");
                 return Ok(tc);
@@ -93,7 +93,8 @@ namespace AppCupones.Controllers
             try
             {
                 var tc = await _context.Cupones_Historial.Where(x => x.CodCliente == CodCliente)
-                    .Include(x => x.Cliente).ToListAsync();
+                    //.Include(x => x.Cliente)
+                    .ToListAsync();
                 Log.Information($"Se llamo al endpoint <CuponHistorial.GetByCodCliente, {CodCliente}>");
                 return Ok(tc);
             }

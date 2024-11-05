@@ -18,8 +18,8 @@ namespace AppCupones.Models
         public virtual CuponModel? Cupon { get; private set; }*/
 
         
-        [ForeignKey("NroCupon")]
-        public virtual CuponClienteModel? Cliente { get; set; }
+        /*[ForeignKey("NroCupon")]
+        public virtual CuponClienteModel? Cliente { get; set; }*/
     }
 
 }

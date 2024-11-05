@@ -242,6 +242,7 @@ namespace AppCupones.Controllers
                 });
 
                 _context.Cupones_Clientes.Remove(cc);
+
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <Cupon.QuemarCupon,{NroCupon}>");

@@ -3,6 +3,7 @@ using Common.Models.DTO;
 using Common.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
+using Serilog;
 
 namespace ClientesApi.Services
 {
@@ -30,8 +31,7 @@ namespace ClientesApi.Services
 
         public async Task<string> QuemarCupon(string NroCupon)
         {
-            var respuesta = await this.apiConnect.FromApi("Cupon/QuemarCupon/{NroCupon}", NroCupon);
-
+            var respuesta = await this.apiConnect.FromApi($"Cupon/QuemarCupon/{NroCupon}");
             var content = await respuesta.Content.ReadAsStringAsync();
 
             if (respuesta.IsSuccessStatusCode)
@@ -44,7 +44,7 @@ namespace ClientesApi.Services
 
         public async Task<ClienteDTO> ObtenerCliente(string NroCupon)
         {
-            var respuesta = await this.apiConnect.FromApi("Cupon/CuponCliente", NroCupon);
+            var respuesta = await this.apiConnect.FromApiGet($"CuponCliente/{NroCupon}");
 
             var content = await respuesta.Content.ReadAsStringAsync();
 
@@ -60,7 +60,7 @@ namespace ClientesApi.Services
                 };
             }
 
-            throw new Exception(content);
+            throw new Exception(respuesta.ToString());
         }
 
     }

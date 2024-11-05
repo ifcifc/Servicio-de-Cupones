@@ -24,7 +24,7 @@ namespace ClientesApi.Controllers
             this.emailService = emailService;
         }
 
-        [HttpPost("EnviarSolicitudCupon")]
+        [HttpPost("ReclamarCupon")]
         public async Task<IActionResult> EnviarSolicitudCupon([FromBody] ClienteDTO clienteDTO)
         {
             if (clienteDTO == null)
@@ -63,7 +63,7 @@ namespace ClientesApi.Controllers
             }
         }
 
-        [HttpPost("QuemarCupon/{NroCupon}")]
+        [HttpPost("UsarCupon/{NroCupon}")]
         public async Task<IActionResult> QuemarCupon(string NroCupon)
         {
             if (NroCupon.IsNullOrEmpty())
