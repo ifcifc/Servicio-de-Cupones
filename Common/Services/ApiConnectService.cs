@@ -1,4 +1,5 @@
-﻿using Common.Models;
+﻿using Common.Interfaces;
+using Common.Models;
 using Newtonsoft.Json;
 using Serilog;
 using System.Net.Http;
@@ -6,7 +7,7 @@ using System.Text;
 
 namespace Common.Services
 {
-    public class ApiConnectService
+    public class ApiConnectService : IApiConnectService
     {
         private string apiUrl { get; set; }
 

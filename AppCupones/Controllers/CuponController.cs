@@ -14,15 +14,16 @@ using Common.Controllers;
 using Common.Services;
 using Common.Models.DTO;
 using Microsoft.IdentityModel.Tokens;
+using Common.Interfaces;
 
 namespace AppCupones.Controllers
 {
 
     public class CuponController : BaseController<CuponModel, DbAppContext>
     {
-        private GenerateCuponService generateCuponService { get; set; }
+        private IGenerateCuponService generateCuponService { get; set; }
 
-        public CuponController(DbAppContext context, GenerateCuponService generateCuponService):base(context) {
+        public CuponController(DbAppContext context, IGenerateCuponService generateCuponService):base(context) {
             this.generateCuponService = generateCuponService;
         }
 

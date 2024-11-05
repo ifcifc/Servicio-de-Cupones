@@ -1,6 +1,7 @@
 ﻿using ClientesApi.Data;
 using ClientesApi.Interfaces;
 using ClientesApi.Models;
+using Common.Interfaces;
 using Common.Models.DTO;
 using Common.Services;
 using Microsoft.AspNetCore.Mvc;
@@ -10,15 +11,17 @@ using Serilog;
 
 namespace ClientesApi.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class SolicitudCuponesController : ControllerBase
     {
-        protected readonly DbAppContext _context; 
+        private readonly DbAppContext _context; 
         private readonly EmailService emailService;
-
         private IClienteService clienteService { get; set; }
 
         public SolicitudCuponesController(DbAppContext context, IClienteService clienteService, EmailService emailService)
         {
+
             _context = context;
             this.clienteService = clienteService;
             this.emailService = emailService;

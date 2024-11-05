@@ -10,6 +10,8 @@ namespace ClientesApi.Services
     public class ClienteService : IClienteService
     {
         private ApiConnectService apiConnect {get;set;}
+
+        //Un servicio puede recibir otro servicio
         public ClienteService(ApiConnectService apiConnect)
         {
             this.apiConnect = apiConnect;
@@ -51,7 +53,7 @@ namespace ClientesApi.Services
             if (respuesta.IsSuccessStatusCode)
             {
 
-                //convierto la respuesta en un JObject para obtener el NroCupon
+                //convierto la respuesta en un JObject
                 JObject jobj = JObject.Parse(content);
                 
                 return new ClienteDTO() { 

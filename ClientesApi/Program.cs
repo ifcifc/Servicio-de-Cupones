@@ -8,6 +8,7 @@ using ClientesApi.Services;
 using Common.Services;
 using Common.Models.Config;
 using Microsoft.Extensions.Configuration;
+using Common.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +43,10 @@ var smtpConfig = new SmtpConfig()
 builder.Services.AddScoped<IClienteService, ClienteService>();
 builder.Services.AddScoped<ApiConnectService>(s => new ApiConnectService(apiUrl));
 builder.Services.AddScoped<EmailService>(s => new EmailService(smtpConfig));
+
+//Provoca un crash 
+//builder.Services.AddScoped<IApiConnectService, ApiConnectService>(s => new ApiConnectService(apiUrl));
+//builder.Services.AddScoped<IEmailService, EmailService>(s => new EmailService(smtpConfig));
 #endregion
 
 #region Authentication

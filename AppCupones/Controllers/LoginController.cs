@@ -1,10 +1,8 @@
 ﻿using AppCupones.Data;
-using AppCupones.Models;
-using AppCupones.Services;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using Common.Controllers;
-using Common.Services;
+using Common.Models;
+using Common.Interfaces;
+using Common.Models.DTO;
 
 namespace AppCupones.Controllers
 {
@@ -13,10 +11,10 @@ namespace AppCupones.Controllers
     public class LoginController : Controller
     {
         private readonly DbAppContext _context;
-        private readonly HashPasswordService _hashPasswordService;
-        private readonly JwtTokenService _jwtTokenService;
+        private readonly IHashPasswordService _hashPasswordService;
+        private readonly IJwtTokenService _jwtTokenService;
 
-        public LoginController(DbAppContext context, HashPasswordService hashPasswordService, JwtTokenService jwtTokenService)
+        public LoginController(DbAppContext context, IHashPasswordService hashPasswordService, IJwtTokenService jwtTokenService)
         {
             _context = context;
             _hashPasswordService = hashPasswordService;
@@ -35,12 +33,11 @@ namespace AppCupones.Controllers
 
             if (usuario == null) return BadRequest("Los datos son incorrectos");*/
 
-            var usuario = new UsuarioModel()
+            var usuario = new UsuarioDTO()
             {
                 Nombre = "Alguien",
-                Apellido = "Alguno",
                 Email = "algo@mail.com",
-                Password = "123"
+                ID_Usuario = 3
             };
 
             string token = this._jwtTokenService.GenerarToken(usuario);
@@ -49,7 +46,6 @@ namespace AppCupones.Controllers
             {
                 Message = "Usuario logeado correctamente",
                 Nombre = usuario.Nombre,
-                Apellido = usuario.Apellido,
                 Email = usuario.Email,
                 Token = token
             });

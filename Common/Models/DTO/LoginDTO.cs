@@ -1,6 +1,6 @@
 ﻿using Common.Models;
 
-namespace AppCupones.Models
+namespace Common.Models
 {
     public class LoginDTO : Model
     {

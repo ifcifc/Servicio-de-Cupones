@@ -1,15 +1,15 @@
-﻿using AppCupones.Models;
-using Elfie.Serialization;
+﻿
+using Common.Interfaces;
+using Common.Models.DTO;
+using Microsoft.Extensions.Configuration;
 using Microsoft.IdentityModel.JsonWebTokens;
 using Microsoft.IdentityModel.Tokens;
-using System;
 using System.Security.Claims;
 using System.Text;
-using static System.Runtime.InteropServices.JavaScript.JSType;
 
-namespace AppCupones.Services
+namespace Common.Services
 {
-    public class JwtTokenService
+    public class JwtTokenService : IJwtTokenService
     {
         private readonly IConfiguration _configuration;
 
@@ -18,7 +18,7 @@ namespace AppCupones.Services
             _configuration = configuration;
         }
 
-        public string GenerarToken(UsuarioModel usuario)
+        public string GenerarToken(UsuarioDTO usuario)
         {
             SymmetricSecurityKey symmetricSecurityKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(_configuration["JwtSettings:key"]));
             SigningCredentials signingCredentials = new SigningCredentials(symmetricSecurityKey, SecurityAlgorithms.HmacSha256Signature);
@@ -33,7 +33,7 @@ namespace AppCupones.Services
                     new Claim(ClaimTypes.Email, usuario.Email)
                 ]),
                 Expires = DateTime.Now.AddMinutes(20),
-                SigningCredentials =signingCredentials
+                SigningCredentials = signingCredentials
             };
 
             JsonWebTokenHandler jsonWebTokenHandler = new JsonWebTokenHandler();

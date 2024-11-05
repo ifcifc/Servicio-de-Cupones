@@ -4,11 +4,11 @@ using AppCupones.Data;
 using System;
 using System.Security.Cryptography.Xml;
 using System.Text.Json.Serialization;
-using AppCupones.Services;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
 using Common.Services;
+using Common.Interfaces;
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddDbContext<DbAppContext>(options => {
@@ -28,9 +28,9 @@ Log.Logger = new LoggerConfiguration()
 #endregion
 
 #region Services
-builder.Services.AddScoped<HashPasswordService>();
-builder.Services.AddScoped<JwtTokenService>();
-builder.Services.AddScoped<GenerateCuponService>();
+builder.Services.AddScoped<IHashPasswordService, HashPasswordService>();
+builder.Services.AddScoped<IJwtTokenService, JwtTokenService>();
+builder.Services.AddScoped<IGenerateCuponService, GenerateCuponService>();
 #endregion
 
 #region Authentication

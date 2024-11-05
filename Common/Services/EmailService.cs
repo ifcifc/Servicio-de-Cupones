@@ -1,4 +1,5 @@
-﻿using Common.Models.Config;
+﻿using Common.Interfaces;
+using Common.Models.Config;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -9,9 +10,9 @@ using System.Threading.Tasks;
 
 namespace Common.Services
 {
-    public class EmailService
+    public class EmailService : IEmailService
     {
-        private SmtpConfig smtpConfig { get;set;}
+        private SmtpConfig smtpConfig { get; set; }
 
         public EmailService(SmtpConfig smtpConfig)
         {
@@ -20,7 +21,7 @@ namespace Common.Services
 
         public async Task EnviarEmail(string email, string subject, string message)
         {
-            try 
+            try
             {
                 SmtpClient smtpClient = new SmtpClient(this.smtpConfig.Host);
                 smtpClient.Port = this.smtpConfig.Port;
@@ -28,16 +29,18 @@ namespace Common.Services
                 smtpClient.Credentials = new NetworkCredential(this.smtpConfig.Email, this.smtpConfig.Password);
 
                 MailMessage mailMessage = new MailMessage();
+                mailMessage.IsBodyHtml = true;
                 mailMessage.From = new MailAddress("ProgramacionIV@testing.com", "ProgramacionIV");
                 mailMessage.Subject = subject;
                 mailMessage.Body = message;
                 mailMessage.To.Add(email);
 
                 await smtpClient.SendMailAsync(mailMessage);
-            }catch (Exception ex)
+            }
+            catch (Exception ex)
             {
                 //Pa que hice esto?, ya lo hice asi que lo dejo
-                throw new Exception(ex.Message + "\n" +  this.smtpConfig.ToString());
+                throw new Exception(ex.Message + "\n" + this.smtpConfig.ToString());
             }
         }
     }

@@ -2,6 +2,7 @@
 using ClientesApi.Interfaces;
 using ClientesApi.Models;
 using Common.Controllers;
+using Common.Interfaces;
 using Common.Models.DTO;
 using Common.Services;
 using Microsoft.AspNetCore.Mvc;

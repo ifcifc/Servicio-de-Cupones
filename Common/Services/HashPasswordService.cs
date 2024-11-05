@@ -1,9 +1,10 @@
 ﻿using System.Security.Cryptography;
 using System.Text;
+using Common.Interfaces;
 
 namespace Common.Services
 {
-    public class HashPasswordService
+    public class HashPasswordService : IHashPasswordService
     {
         public string HashPassword(string password)
         {
