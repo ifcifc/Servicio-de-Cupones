@@ -12,6 +12,8 @@ using Microsoft.AspNetCore.Authorization;
 using System.Runtime.InteropServices;
 using Common.Controllers;
 using Common.Services;
+using Common.Models.DTO;
+using Microsoft.IdentityModel.Tokens;
 
 namespace AppCupones.Controllers
 {
@@ -168,19 +170,24 @@ namespace AppCupones.Controllers
             }
         }
 
-        [HttpPost("AsignarCupon/{Id_Cupon}, {CodCliente}")]
-        public async Task<IActionResult> AsignarCupon(int Id_Cupon, string CodCliente)
+        [HttpPost("AsignarCupon")]
+        public async Task<IActionResult> AsignarCupon(ClienteDTO clienteDTO)
         {
+            if (clienteDTO.CodCliente.IsNullOrEmpty()) 
+            {
+                Log.Error($"Error en el endpoint <Cupon.AsignarCupon, {clienteDTO.ToString()}>: Falta el codigo de cliente");
+                return BadRequest("No se a pasado un codigo de cliente");
+            }
+
             try
             {
-                if (!this.Any(Id_Cupon))
+                if (!this.Any(clienteDTO.Id_Cupon))
                 {
-                    Log.Error($"Error en el endpoint <Cupon.AsignarCupon, [{Id_Cupon}, {CodCliente}]>: El cupon no existe");
+                    Log.Error($"Error en el endpoint <Cupon.AsignarCupon, {clienteDTO.ToString()}>: El cupon no existe");
                     return BadRequest("El cupon no existe");
                 }
 
-
-                var NroCupon = "";
+               var NroCupon = "";
 
                 //Verifica que no exista ningun cupon con el numero generado, si existe se vuelve a generar
                 do {
@@ -190,23 +197,23 @@ namespace AppCupones.Controllers
 
                 var cc = new CuponClienteModel()
                 {
-                    Id_Cupon = Id_Cupon,
-                    CodCliente = CodCliente,
+                    Id_Cupon = clienteDTO.Id_Cupon,
+                    CodCliente = clienteDTO.CodCliente,
                     FechaAsignado = DateTime.Now,
                     NroCupon = NroCupon
                 };
 
                 await _context.Cupones_Clientes.AddAsync(cc);
                 await _context.SaveChangesAsync();
-                Log.Information($"Se llamo al endpoint <Cupon.AsignarCupon, [{Id_Cupon}, {CodCliente}]>");
+                Log.Information($"Se llamo al endpoint <Cupon.AsignarCupon, {clienteDTO.ToString()}>");
                 return Ok(new {
                     Message = "El cupon fue asignado correctamente",
-                    NroCupon = cc.NroCupon
+                    NroCupon = NroCupon
                 });
             }
             catch (Exception ex)
             {
-                Log.Error($"Error en el endpoint <Cupon.AsignarCupon, [{Id_Cupon}, {CodCliente}]>: {ex.Message}");
+                Log.Error($"Error en el endpoint <Cupon.AsignarCupon, {clienteDTO.ToString()}>: {ex.Message}");
                 return BadRequest($"Hubo un error: {ex.Message}");
             }
 
@@ -234,7 +241,7 @@ namespace AppCupones.Controllers
                     CodCliente = cc.CodCliente
                 });
 
-                //_context.Cupones_Clientes.Remove(cc);
+                _context.Cupones_Clientes.Remove(cc);
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <Cupon.QuemarCupon,{NroCupon}>");

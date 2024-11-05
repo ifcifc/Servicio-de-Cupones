@@ -3,9 +3,13 @@ using System;
 using Serilog;
 using ClientesApi.Data;
 using Microsoft.EntityFrameworkCore;
+using ClientesApi.Interfaces;
+using ClientesApi.Services;
+using Common.Services;
+using Common.Models.Config;
+using Microsoft.Extensions.Configuration;
 
 var builder = WebApplication.CreateBuilder(args);
-
 
 
 builder.Services.AddDbContext<DbAppContext>(options => {
@@ -25,8 +29,19 @@ Log.Logger = new LoggerConfiguration()
 #endregion
 
 #region Services
-/*builder.Services.AddScoped<HashPasswordService>();
-builder.Services.AddScoped<JwtTokenService>();*/
+var apiUrl = builder.Configuration.GetValue<string>("ApiUrl");
+var smtpConfig = new SmtpConfig()
+{
+    Email = builder.Configuration.GetValue<string>("SMTP:Email"),
+    Password = builder.Configuration.GetValue<string>("SMTP:Password"),
+    Host = builder.Configuration.GetValue<string>("SMTP:Host"),
+    Port = builder.Configuration.GetValue<int>("SMTP:Port")
+};
+
+
+builder.Services.AddScoped<IClienteService, ClienteService>();
+builder.Services.AddScoped<ApiConnectService>(s => new ApiConnectService(apiUrl));
+builder.Services.AddScoped<EmailService>(s => new EmailService(smtpConfig));
 #endregion
 
 #region Authentication

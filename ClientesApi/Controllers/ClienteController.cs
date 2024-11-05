@@ -1,20 +1,34 @@
 ﻿using ClientesApi.Data;
+using ClientesApi.Interfaces;
 using ClientesApi.Models;
 using Common.Controllers;
+using Common.Models.DTO;
+using Common.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using Serilog;
 
 namespace ClientesApi.Controllers
 {
-    public class ClienteController(DbAppContext context) : BaseController<ClienteModel, DbAppContext>(context)
+    public class ClienteController : BaseController<ClienteModel, DbAppContext>
     {
+        private readonly EmailService emailService;
+        public ClienteController(DbAppContext context, EmailService emailService) : base(context) 
+        {
+            this.emailService = emailService;
+        }
+
         public override async Task<IActionResult> Add(ClienteModel model)
         {
             try
             {
                 var entityEntry = await _context.Clientes.AddAsync(model);
                 await _context.SaveChangesAsync();
+
+                //Tenia que usarlo para algo mas
+                await this.emailService.EnviarEmail(model.Email, "Registro", $"Bienvenido {model.Nombre_Cliente}");
 
                 Log.Information($"Se llamo al endpoint <Cliente.Add, {model.ToString()}>");
                 return Ok(model);
@@ -119,6 +133,8 @@ namespace ClientesApi.Controllers
                 return BadRequest($"Hubo un error: {ex.Message}");
             }
         }
+
+        
 
         protected override bool Any(int id) => false;
 
