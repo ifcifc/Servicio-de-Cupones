@@ -2,7 +2,7 @@
 using System.ComponentModel;
 using System.ComponentModel.DataAnnotations;
 
-namespace AppCupones.Models
+namespace CuponesAPI.Models
 {
     public class ArticuloModel : Model
     {

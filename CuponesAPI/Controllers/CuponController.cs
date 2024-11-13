@@ -5,8 +5,8 @@ using System.Threading.Tasks;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using AppCupones.Data;
-using AppCupones.Models;
+using CuponesAPI.Data;
+using CuponesAPI.Models;
 using Serilog;
 using Microsoft.AspNetCore.Authorization;
 using System.Runtime.InteropServices;
@@ -16,7 +16,7 @@ using Common.Models.DTO;
 using Microsoft.IdentityModel.Tokens;
 using Common.Interfaces;
 
-namespace AppCupones.Controllers
+namespace CuponesAPI.Controllers
 {
 
     public class CuponController : BaseController<CuponModel, DbAppContext>

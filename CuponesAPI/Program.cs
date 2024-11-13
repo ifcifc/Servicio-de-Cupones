@@ -1,6 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using Serilog;
-using AppCupones.Data;
+using CuponesAPI.Data;
 using System;
 using System.Security.Cryptography.Xml;
 using System.Text.Json.Serialization;

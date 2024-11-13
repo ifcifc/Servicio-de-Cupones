@@ -3,7 +3,7 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.9.34728.123
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "AppCupones", "AppCupones\AppCupones.csproj", "{9C07BD63-0740-43FA-88EE-F2D7D2721150}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "CuponesAPI", "CuponesAPI\CuponesAPI.csproj", "{9C07BD63-0740-43FA-88EE-F2D7D2721150}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientesApi", "ClientesApi\ClientesApi.csproj", "{70D301CE-0468-44AB-B87E-4319EF3E63B8}"
 EndProject

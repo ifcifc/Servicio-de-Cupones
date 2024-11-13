@@ -1,9 +1,9 @@
 ﻿using Microsoft.EntityFrameworkCore;
-using AppCupones.Models;
+using CuponesAPI.Models;
 using System.Collections.Generic;
 using System.Reflection.Emit;
 
-namespace AppCupones.Data
+namespace CuponesAPI.Data
 {
     public class DbAppContext : DbContext
     {

@@ -1,7 +1,7 @@
 ﻿using Common.Models;
 using System.ComponentModel.DataAnnotations;
 
-namespace AppCupones.Models
+namespace CuponesAPI.Models
 {
     public class TipoCuponModel : Model
     {

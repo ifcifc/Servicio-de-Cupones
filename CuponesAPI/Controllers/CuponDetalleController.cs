@@ -1,6 +1,6 @@
-using AppCupones.Data;
-using AppCupones.Data;
-using AppCupones.Models;
+using CuponesAPI.Data;
+using CuponesAPI.Data;
+using CuponesAPI.Models;
 using Common.Controllers;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -8,7 +8,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Serilog;
 using System.Runtime.InteropServices;
 
-namespace AppCupones.Controllers
+namespace CuponesAPI.Controllers
 {
     public class CuponDetalleController(DbAppContext context) : BaseController<CuponDetalleModel,DbAppContext>(context)
     {

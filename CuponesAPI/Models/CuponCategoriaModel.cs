@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace AppCupones.Models
+namespace CuponesAPI.Models
 {
     public class CuponCategoriaModel : Model
     {

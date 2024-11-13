@@ -1,11 +1,11 @@
-﻿using AppCupones.Data;
-using AppCupones.Models;
+﻿using CuponesAPI.Data;
+using CuponesAPI.Models;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Serilog;
 using Common.Controllers;
 
-namespace AppCupones.Controllers
+namespace CuponesAPI.Controllers
 {
     public class CategoriaController(DbAppContext context) : BaseController<CategoriaModel, DbAppContext>(context)
     {

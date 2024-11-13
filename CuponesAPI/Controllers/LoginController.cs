@@ -1,10 +1,10 @@
-﻿using AppCupones.Data;
+﻿using CuponesAPI.Data;
 using Microsoft.AspNetCore.Mvc;
 using Common.Models;
 using Common.Interfaces;
 using Common.Models.DTO;
 
-namespace AppCupones.Controllers
+namespace CuponesAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiExplorerSettings(IgnoreApi = true)]
