@@ -1,6 +1,7 @@
 ﻿
 using Common.Models.DTO;
 using Microsoft.AspNetCore.Mvc;
+using Newtonsoft.Json.Linq;
 
 namespace ClientesApi.Interfaces
 {
@@ -11,5 +12,6 @@ namespace ClientesApi.Interfaces
         Task<string> QuemarCupon(string NroCupon);
 
         Task<ClienteDTO> ObtenerCliente(string NroCupon);
+        Task<string> ObtenerCuponesActivos(string CodCliente);
     }
 }

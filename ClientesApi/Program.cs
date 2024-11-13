@@ -12,7 +12,6 @@ using Common.Interfaces;
 
 var builder = WebApplication.CreateBuilder(args);
 
-
 builder.Services.AddDbContext<DbAppContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection"));
 });

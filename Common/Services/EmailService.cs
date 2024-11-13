@@ -39,8 +39,7 @@ namespace Common.Services
             }
             catch (Exception ex)
             {
-                //Pa que hice esto?, ya lo hice asi que lo dejo
-                throw new Exception(ex.Message + "\n" + this.smtpConfig.ToString());
+                throw new Exception(ex.Message + "\n" + "Verifique la configuracion del servidor SMTP.");// this.smtpConfig.ToString()
             }
         }
     }

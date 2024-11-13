@@ -4,6 +4,7 @@ using Common.Services;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json.Linq;
 using Serilog;
+using Serilog.Formatting.Json;
 
 namespace ClientesApi.Services
 {
@@ -19,7 +20,7 @@ namespace ClientesApi.Services
 
         public async Task<string> SolicitarCupon(ClienteDTO clienteDTO)
         {
-            var respuesta = await this.apiConnect.FromApi("Cupon/AsignarCupon", clienteDTO);
+            var respuesta = await this.apiConnect.FromApi("SolicitudCupones/AsignarCupon", clienteDTO);
 
             var content = await respuesta.Content.ReadAsStringAsync();
 
@@ -33,7 +34,7 @@ namespace ClientesApi.Services
 
         public async Task<string> QuemarCupon(string NroCupon)
         {
-            var respuesta = await this.apiConnect.FromApi($"Cupon/QuemarCupon/{NroCupon}");
+            var respuesta = await this.apiConnect.FromApi($"SolicitudCupones/QuemarCupon/{NroCupon}");
             var content = await respuesta.Content.ReadAsStringAsync();
 
             if (respuesta.IsSuccessStatusCode)
@@ -63,6 +64,19 @@ namespace ClientesApi.Services
             }
 
             throw new Exception(respuesta.ToString());
+        }
+
+        public async Task<string> ObtenerCuponesActivos(string CodCliente) 
+        {
+            var respuesta = await this.apiConnect.FromApiGet($"CuponCliente/GetAllByCodCliente/{CodCliente}");
+
+            var content = await respuesta.Content.ReadAsStringAsync();
+
+            //Para que el json que devuelve sea legible
+            JArray jsonFormatted = JArray.Parse(content);
+            string prettyJson = jsonFormatted.ToString(Newtonsoft.Json.Formatting.Indented);
+
+            return prettyJson;
         }
 
     }

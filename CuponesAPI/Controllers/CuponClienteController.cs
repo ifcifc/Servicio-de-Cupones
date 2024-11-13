@@ -118,17 +118,43 @@ namespace CuponesAPI.Controllers
                     .FirstOrDefaultAsync(x => x.NroCupon == NroCupon);
                 if (tc is null)
                 {
-                    Log.Error($"Error en el endpoint <CuponCliente.GetByID, {NroCupon}>: El precio no existe");
+                    Log.Error($"Error en el endpoint <CuponCliente.GetByNroCupon, {NroCupon}>: No existe el cupon");
                     return NotFound("El tipo de cliente cupon no existe");
                 }
 
-                Log.Information($"Se llamo al endpoint <CuponCliente.GetByID, {NroCupon}>");
+                Log.Information($"Se llamo al endpoint <CuponCliente.GetByNroCupon, {NroCupon}>");
 
                 return Ok(tc);
             }
             catch (Exception ex)
             {
-                Log.Error($"Error en el endpoint <CuponCliente.GetByID, {NroCupon}>: {ex.Message}");
+                Log.Error($"Error en el endpoint <CuponCliente.GetByNroCupon, {NroCupon}>: {ex.Message}");
+                return BadRequest($"Hubo un error: {ex.Message}");
+            }
+        }
+
+        [HttpGet("GetAllByCodCliente/{CodCliente}")]
+        public async Task<IActionResult> GetAllByCodCliente(string CodCliente)
+        {
+            try
+            {
+                var tc = await _context.Cupones_Clientes.AsNoTracking()
+                    .Include(x => x.Cupon)
+                    .Where(x => x.CodCliente.Equals(CodCliente))
+                    .ToListAsync();
+                if (tc is null)
+                {
+                    Log.Error($"Error en el endpoint <CuponCliente.GetAllByCodCliente, {CodCliente}>: El precio no existe");
+                    return NotFound("El tipo de cliente cupon no existe");
+                }
+
+                Log.Information($"Se llamo al endpoint <CuponCliente.GetAllByCodCliente, {CodCliente}>");
+
+                return Ok(tc);
+            }
+            catch (Exception ex)
+            {
+                Log.Error($"Error en el endpoint <CuponCliente.GetAllByCodCliente, {CodCliente}>: {ex.Message}");
                 return BadRequest($"Hubo un error: {ex.Message}");
             }
         }

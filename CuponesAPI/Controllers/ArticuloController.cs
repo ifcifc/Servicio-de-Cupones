@@ -16,6 +16,15 @@ namespace CuponesAPI.Controllers
             try
             {
                 var entityEntry = await _context.Articulos.AddAsync(model);
+
+                await _context.SaveChangesAsync();
+
+                await _context.Precios.AddAsync(new PrecioModel()
+                {
+                    Id_Articulo = model.Id_Articulo,
+                    Precio = 0
+                }) ;
+
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <Articulo.Add, {model.ToString()}>");

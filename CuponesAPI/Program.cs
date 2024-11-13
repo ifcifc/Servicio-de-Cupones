@@ -15,6 +15,7 @@ builder.Services.AddDbContext<DbAppContext>(options => {
     options.UseSqlServer(builder.Configuration.GetConnectionString("DBConnection"));
 });
 
+
 #region Logger
 Log.Logger = new LoggerConfiguration()
     .Enrich.FromLogContext()
@@ -34,7 +35,7 @@ builder.Services.AddScoped<IGenerateCuponService, GenerateCuponService>();
 #endregion
 
 #region Authentication
-builder.Services.AddAuthentication(options =>
+/*builder.Services.AddAuthentication(options =>
 {
     options.DefaultAuthenticateScheme = JwtBearerDefaults.AuthenticationScheme;
     options.DefaultChallengeScheme = JwtBearerDefaults.AuthenticationScheme;
@@ -48,7 +49,7 @@ builder.Services.AddAuthentication(options =>
         ValidateIssuerSigningKey = true,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(builder.Configuration["JwtSettings:key"]))
     };
-});
+});*/
 #endregion
 
 #region JsonOptions
