@@ -7,6 +7,7 @@ using Common.Models.DTO;
 namespace AppCupones.Controllers
 {
     [Route("api/[controller]")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
     public class LoginController : Controller
     {

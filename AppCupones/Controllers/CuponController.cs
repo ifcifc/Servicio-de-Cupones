@@ -89,11 +89,11 @@ namespace AppCupones.Controllers
                     return NotFound("No existe el Tipo de cupon asignado");
                 }
 
-                var entityEntry = _context.Cupones.Add(model);
+                await _context.Cupones.AddAsync(model);
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <cupon.Add, {model.ToString()}>");
-                return Ok(entityEntry);
+                return Ok(model);
             }
             catch (Exception ex)
             {
@@ -225,20 +225,40 @@ namespace AppCupones.Controllers
         {
             try
             {
-                var any = await _context.Cupones_Clientes.AnyAsync(x => x.NroCupon == NroCupon);
+                var any = await _context.Cupones_Clientes.IgnoreQueryFilters().AnyAsync(x => x.NroCupon == NroCupon);
                 if (!any)
                 {
                     Log.Error($"Error en el endpoint <Cupon.QuemarCupon, {NroCupon}>: El Nro cupon no existe");
                     return BadRequest("El Nro cupon no existe");
                 }
 
-                var cc = await _context.Cupones_Clientes.FirstAsync(x => x.NroCupon == NroCupon);
+                var cc = await _context.Cupones_Clientes
+                                        .IgnoreQueryFilters()
+                                        .Include(x=>x.Cupon)
+                                        .AsNoTracking()
+                                        .FirstAsync(x => x.NroCupon == NroCupon);
+
+                if (!cc.Cupon.Activo) 
+                {
+                    Log.Error($"Error en el endpoint <Cupon.QuemarCupon, {NroCupon}>: El cupon ya no esta disponible");
+                    return BadRequest($"El cupon ya no esta disponible");
+                }
+
+                var fecha = DateTime.Now;
+
+
+                if (!(fecha >= cc.Cupon.FechaInicio && fecha <= cc.Cupon.FechaFin)) 
+                {
+                    Log.Error($"Error en el endpoint <Cupon.QuemarCupon, {NroCupon}>: El cupon expiro");
+                    
+                    return BadRequest($"El cupon expiro");
+                }
 
                 await _context.Cupones_Historial.AddAsync(new CuponHistorialModel()
                 {
                     Id_Cupon = cc.Id_Cupon,
                     NroCupon = cc.NroCupon,
-                    FechaUso = DateTime.Now,
+                    FechaUso = fecha,
                     CodCliente = cc.CodCliente
                 });
 
