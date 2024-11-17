@@ -80,7 +80,7 @@ namespace CuponesAPI.Controllers
                 if (!existeTipo_Cupon)
                 {
                     Log.Error($"Error en el endpoint <Cupon.Add, {model.ToString()}>: No existe el Tipo_Cupon asignado");
-                    return NotFound("No existe el Tipo de cupon asignado");
+                    return NotFound("No existe el tipo de cupon asignado");
                 }
 
                 await _context.Cupones.AddAsync(model);
@@ -122,7 +122,7 @@ namespace CuponesAPI.Controllers
                 if (!existeRol)
                 {
                     Log.Error($"Error en el endpoint <Cupon.Update, {model.ToString()}>: No existe el Tipo_Cupon asignado");
-                    return NotFound("No existe el Tipo de cupon asignado");
+                    return NotFound("No existe el tipo de cupon asignado");
                 }
                 model.TipoCupon = null;
                 _context.Cupones.Update(model);

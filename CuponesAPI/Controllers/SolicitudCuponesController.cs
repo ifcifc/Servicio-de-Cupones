@@ -30,8 +30,8 @@ namespace CuponesAPI.Controllers
         {
             if (clienteDTO.CodCliente.IsNullOrEmpty())
             {
-                Log.Error($"Error en el endpoint <Cupon.AsignarCupon, {clienteDTO.ToString()}>: Falta el codigo de cliente");
-                return BadRequest("No se a pasado un codigo de cliente");
+                Log.Error($"Error en el endpoint <Cupon.AsignarCupon, {clienteDTO.ToString()}>: Falta el codigo del cliente");
+                return BadRequest("No ingreso el codigo del cliente");
             }
 
             try
@@ -84,8 +84,8 @@ namespace CuponesAPI.Controllers
                 var any = await _context.Cupones_Clientes.IgnoreQueryFilters().AnyAsync(x => x.NroCupon == NroCupon);
                 if (!any)
                 {
-                    Log.Error($"Error en el endpoint <Cupon.QuemarCupon, {NroCupon}>: El Nro cupon no existe");
-                    return BadRequest("El Nro cupon no existe");
+                    Log.Error($"Error en el endpoint <Cupon.QuemarCupon, {NroCupon}>: El numero del cupon no existe");
+                    return BadRequest("El numero del cupon no existe");
                 }
 
                 var cc = await _context.Cupones_Clientes

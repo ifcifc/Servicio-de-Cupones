@@ -94,7 +94,7 @@ namespace ClientesApi.Controllers
                 if (tc is null)
                 {
                     Log.Error($"Error en el endpoint <Cliente.GetByID, {CodCliente}>: El cliente no existe");
-                    return NotFound("El tipo de cliente no existe");
+                    return NotFound("El cliente no existe");
                 }
 
                 Log.Information($"Se llamo al endpoint <Cliente.GetByID, {CodCliente}>");
@@ -112,8 +112,8 @@ namespace ClientesApi.Controllers
         {
             if (model is null)
             {
-                Log.Error($"Error en el endpoint <Cliente.Update>: No se proporciono un cupon");
-                return BadRequest("No se proporciono un cupon");
+                Log.Error($"Error en el endpoint <Cliente.Update>: No se proporciono un cliente");
+                return BadRequest("No se proporciono un cliente");
             }
 
             try
@@ -130,7 +130,7 @@ namespace ClientesApi.Controllers
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <Cliente.Update, {model.ToString()}>");
-                return Ok("Cupon modificado correctamente");
+                return Ok("Cliente modificado correctamente");
             }
             catch (Exception ex)
             {

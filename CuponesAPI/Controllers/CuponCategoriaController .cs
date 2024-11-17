@@ -40,8 +40,8 @@ namespace CuponesAPI.Controllers
 
                 if (tc is null)
                 {
-                    Log.Error($"Error en el endpoint <CuponCategoria.Delete, {Id}>: El cupon categoria no existe");
-                    return BadRequest("El cupon categoria no existe");
+                    Log.Error($"Error en el endpoint <CuponCategoria.Delete, {Id}>: La categoria no existe");
+                    return BadRequest("La categoria no existe");
                 }
 
                 _context.Cupones_Categorias.Remove(tc);
@@ -49,7 +49,7 @@ namespace CuponesAPI.Controllers
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <CuponCategoria.Delete, {Id}>");
-                return Ok("Precio eliminado correctamente");
+                return Ok("categoria eliminada correctamente");
             }
             catch (Exception ex)
             {
@@ -84,8 +84,8 @@ namespace CuponesAPI.Controllers
                         .FirstOrDefaultAsync(x => x.Id_Cupones_Categorias == Id);
                 if (tc is null)
                 {
-                    Log.Error($"Error en el endpoint <CuponCategoria.GetByID, {Id}>: El cupon categoria no existe");
-                    return NotFound("El cupon categoria no existe");
+                    Log.Error($"Error en el endpoint <CuponCategoria.GetByID, {Id}>: La categoria no existe");
+                    return NotFound("La categoria no existe");
                 }
 
                 Log.Information($"Se llamo al endpoint <CuponCategoria.GetByID, {Id}>");
@@ -102,8 +102,8 @@ namespace CuponesAPI.Controllers
         {
             if (model is null)
             {
-                Log.Error($"Error en el endpoint <CuponCategoria.Update>: No se proporciono un cupon");
-                return BadRequest("No se proporciono un cupon");
+                Log.Error($"Error en el endpoint <CuponCategoria.Update>: No se proporciono un modelo");
+                return BadRequest("No se proporciono un modelo");
             }
 
             try
@@ -112,8 +112,8 @@ namespace CuponesAPI.Controllers
                 bool cuponExiste = this.Any(model.Id_Cupones_Categorias);
                 if (!cuponExiste)
                 {
-                    Log.Error($"Error en el endpoint <CuponCategoria.Update, {model.ToString()}>: El cupon categoria no existe");
-                    return NotFound("El cupon categoria no existe");
+                    Log.Error($"Error en el endpoint <CuponCategoria.Update, {model.ToString()}>: La categoria no existe");
+                    return NotFound("La categoria no existe");
                 }
 
                 model.Categoria = null;
@@ -124,7 +124,7 @@ namespace CuponesAPI.Controllers
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <CuponCategoria.Update, {model.ToString()}>");
-                return Ok("Cupon modificado correctamente");
+                return Ok("Categoria modificada correctamente");
             }
             catch (Exception ex)
             {

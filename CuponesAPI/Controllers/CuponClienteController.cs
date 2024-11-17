@@ -55,8 +55,8 @@ namespace CuponesAPI.Controllers
         {
             if (model is null)
             {
-                Log.Error($"Error en el endpoint <CuponCliente.Update>: No se proporciono un cliente cupon");
-                return BadRequest("No se proporciono un cliente cupon");
+                Log.Error($"Error en el endpoint <CuponCliente.Update>: No se proporciono un cupon al cliente");
+                return BadRequest("No se proporciono un cupon al cliente");
             }
 
             try
@@ -65,8 +65,8 @@ namespace CuponesAPI.Controllers
                 bool cuponExiste = this.Any(model.NroCupon);
                 if (!cuponExiste)
                 {
-                    Log.Error($"Error en el endpoint <CuponCliente.Update, {model.ToString()}>: El cliente cupon no existe");
-                    return NotFound("El cliente cupon no existe");
+                    Log.Error($"Error en el endpoint <CuponCliente.Update, {model.ToString()}>: El cupon del cliente no existe");
+                    return NotFound("El cupon del cliente no existe");
                 }
 
                 _context.Cupones_Clientes.Update(model);
@@ -100,7 +100,7 @@ namespace CuponesAPI.Controllers
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <CuponCliente.Delete, {NroCupon}>");
-                return Ok("Cupon cliente eliminado correctamente");
+                return Ok("El cupon del cliente fue eliminado correctamente");
             }
             catch (Exception ex)
             {
@@ -119,7 +119,7 @@ namespace CuponesAPI.Controllers
                 if (tc is null)
                 {
                     Log.Error($"Error en el endpoint <CuponCliente.GetByNroCupon, {NroCupon}>: No existe el cupon");
-                    return NotFound("El tipo de cliente cupon no existe");
+                    return NotFound("El tipo de cupon del cliente no existe");
                 }
 
                 Log.Information($"Se llamo al endpoint <CuponCliente.GetByNroCupon, {NroCupon}>");

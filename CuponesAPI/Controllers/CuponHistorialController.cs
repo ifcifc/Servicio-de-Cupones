@@ -113,8 +113,8 @@ namespace CuponesAPI.Controllers
                 var tc = await _context.Cupones_Historial.AsNoTracking().FirstOrDefaultAsync(x => x.Id_Cupon == Id_Cupon && x.NroCupon==NroCupon);
                 if (tc is null)
                 {
-                    Log.Error($"Error en el endpoint <CuponHistorial.GetByID, [{Id_Cupon}, {NroCupon}]>: El cupon historial no existe");
-                    return NotFound("El cupon historial no existe");
+                    Log.Error($"Error en el endpoint <CuponHistorial.GetByID, [{Id_Cupon}, {NroCupon}]>: El historial del cupon no existe");
+                    return NotFound("El historial del cupon no existe");
                 }
 
                 Log.Information($"Se llamo al endpoint <CuponHistorial.GetByID, [{Id_Cupon}, {NroCupon}]>");
@@ -132,8 +132,8 @@ namespace CuponesAPI.Controllers
         {
             if (model is null)
             {
-                Log.Error($"Error en el endpoint <CuponHistorial.Update>: No se proporciono un cupon historial");
-                return BadRequest("No se proporciono un cupon");
+                Log.Error($"Error en el endpoint <CuponHistorial.Update>: No se proporciono el historial del cupon");
+                return BadRequest("El historial del cupon no existe");
             }
 
             try
@@ -142,8 +142,8 @@ namespace CuponesAPI.Controllers
                 bool cuponExiste = this.Any(model.Id_Cupon, model.NroCupon);
                 if (!cuponExiste)
                 {
-                    Log.Error($"Error en el endpoint <CuponHistorial.Update, {model.ToString()}>: El historial no existe");
-                    return NotFound("El historial no existe");
+                    Log.Error($"Error en el endpoint <CuponHistorial.Update, {model.ToString()}>: El historial del cupon no existe");
+                    return NotFound("El historial del cupon no existe");
                 }
 
                 _context.Cupones_Historial.Update(model);
@@ -168,15 +168,15 @@ namespace CuponesAPI.Controllers
 
                 if (tc is null)
                 {
-                    Log.Error($"Error en el endpoint <CuponHistorial.Delete, [{Id_Cupon}, {NroCupon}]>: El cupon historial no existe");
-                    return BadRequest("El cupon historial no existe");
+                    Log.Error($"Error en el endpoint <CuponHistorial.Delete, [{Id_Cupon}, {NroCupon}]>: El historial del cupon no existe");
+                    return BadRequest("El historial del cupon no existe");
                 }
 
                 _context.Cupones_Historial.Remove(tc);
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <CuponHistorial.Delete, [{Id_Cupon}, {NroCupon}]>");
-                return Ok("Cupon historial eliminado correctamente");
+                return Ok("El historial del cupon fue eliminado correctamente");
             }
             catch (Exception ex)
             {

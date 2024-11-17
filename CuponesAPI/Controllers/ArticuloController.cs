@@ -48,7 +48,11 @@ namespace CuponesAPI.Controllers
                     return BadRequest("El articulo no existe");
                 }
 
-                _context.Articulos.Remove(tc);
+                var precio = await _context.Precios.Where(x => x.Id_Articulo == Id).FirstAsync();
+
+                precio.Precio = 0;
+
+                tc.Activo = false;
 
                 await _context.SaveChangesAsync();
 
@@ -83,7 +87,7 @@ namespace CuponesAPI.Controllers
                 if (tc is null)
                 {
                     Log.Error($"Error en el endpoint <Articulo.GetByID, {Id}>: El articulo no existe");
-                    return NotFound("El tipo de articulo no existe");
+                    return NotFound("El articulo no existe");
                 }
 
                 Log.Information($"Se llamo al endpoint <Articulo.GetByID, {Id}>");
@@ -100,15 +104,15 @@ namespace CuponesAPI.Controllers
         {
             if (model is null)
             {
-                Log.Error($"Error en el endpoint <Articulo.Update>: No se proporciono un cupon");
-                return BadRequest("No se proporciono un cupon");
+                Log.Error($"Error en el endpoint <Articulo.Update>: No se proporciono un articulo");
+                return BadRequest("No se proporciono un articulo");
             }
 
             try
             {
                 //Any -> Devuelve true si encuentra un registro en la DB
-                bool cuponExiste = this.Any(model.Id_Articulo);
-                if (!cuponExiste)
+                bool articuloExiste = this.Any(model.Id_Articulo);
+                if (!articuloExiste)
                 {
                     Log.Error($"Error en el endpoint <Articulo.Update, {model.ToString()}>: El articulo no existe");
                     return NotFound("El articulo no existe");
@@ -118,7 +122,7 @@ namespace CuponesAPI.Controllers
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <Articulo.Update, {model.ToString()}>");
-                return Ok("Cupon modificado correctamente");
+                return Ok("Articulo modificado correctamente");
             }
             catch (Exception ex)
             {

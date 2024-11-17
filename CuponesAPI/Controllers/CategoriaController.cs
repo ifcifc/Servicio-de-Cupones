@@ -38,8 +38,8 @@ namespace CuponesAPI.Controllers
 
                 if (tc is null)
                 {
-                    Log.Error($"Error en el endpoint <Categoria.Delete, {Id}>: El categoria no existe");
-                    return BadRequest("El categoria no existe");
+                    Log.Error($"Error en el endpoint <Categoria.Delete, {Id}>: La categoria no existe");
+                    return BadRequest("La categoria no existe");
                 }
 
                 _context.Categorias.Remove(tc);
@@ -47,7 +47,7 @@ namespace CuponesAPI.Controllers
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <Categoria.Delete, {Id}>");
-                return Ok("categoria eliminado correctamente");
+                return Ok("Categoria eliminada correctamente");
             }
             catch (Exception ex)
             {
@@ -78,8 +78,8 @@ namespace CuponesAPI.Controllers
                 var tc = await _context.Categorias.AsNoTracking().FirstOrDefaultAsync(x => x.Id_Categoria == Id);
                 if (tc is null)
                 {
-                    Log.Error($"Error en el endpoint <Categoria.GetByID, {Id}>: El categoria no existe");
-                    return NotFound("El tipo de categoria no existe");
+                    Log.Error($"Error en el endpoint <Categoria.GetByID, {Id}>: La categoria no existe");
+                    return NotFound("La categoria no existe");
                 }
 
                 Log.Information($"Se llamo al endpoint <Categoria.GetByID, {Id}>");
@@ -107,8 +107,8 @@ namespace CuponesAPI.Controllers
                 bool cuponExiste = this.Any(model.Id_Categoria);
                 if (!cuponExiste)
                 {
-                    Log.Error($"Error en el endpoint <Categoria.Update, {model.ToString()}>: El categoria no existe");
-                    return NotFound("El categoria no existe");
+                    Log.Error($"Error en el endpoint <Categoria.Update, {model.ToString()}>: La categoria no existe");
+                    return NotFound("La categoria no existe");
                 }
                 _context.Categorias.Update(model);
 

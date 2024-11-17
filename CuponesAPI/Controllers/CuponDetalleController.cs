@@ -24,8 +24,8 @@ namespace CuponesAPI.Controllers
 
                 if (this.Any(model.Id_Cupon, model.Id_Articulo))
                 {
-                    Log.Error($"Error en el endpoint <CuponDetalle.Add, {model.ToString()}>: Ya existe un cupon detalle para este cupon");
-                    return BadRequest($"Ya existe un cupon detalle para este cupon");
+                    Log.Error($"Error en el endpoint <CuponDetalle.Add, {model.ToString()}>: Ya existe un detalle para este cupon");
+                    return BadRequest($"Ya existe un detalle para este cupon");
                 }
 
                 var entityEntry = await _context.Cupones_Detalle.AddAsync(model);
@@ -126,15 +126,15 @@ namespace CuponesAPI.Controllers
 
                 if (tc is null)
                 {
-                    Log.Error($"Error en el endpoint <CuponDetalle.Delete, [{Id_Cupon}, {Id_Articulo}]>: El cupon detalle no existe");
-                    return BadRequest("El tipo de cupon no existe");
+                    Log.Error($"Error en el endpoint <CuponDetalle.Delete, [{Id_Cupon}, {Id_Articulo}]>: El detalle del cupon no existe");
+                    return BadRequest("El detalle del cupon no existe");
                 }
 
                 _context.Cupones_Detalle.Remove(tc);
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <CuponDetalle.Delete, [{Id_Cupon}, {Id_Articulo}]>");
-                return Ok("Cupon detalle eliminado correctamente");
+                return Ok("El detalle del cupon fue eliminado correctamente");
             }
             catch (Exception ex)
             {
@@ -149,6 +149,7 @@ namespace CuponesAPI.Controllers
         public override async Task<IActionResult> Delete(int Id) => NotFound("Endpoint no encontrado.");
 
         [ApiExplorerSettings(IgnoreApi = true)]
+        [HttpGet("Borrado_2/{Id}")]
         public override async Task<IActionResult> GetByID(int Id) => NotFound("Endpoint no encontrado.");
     }
 }

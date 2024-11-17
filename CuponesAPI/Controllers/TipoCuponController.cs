@@ -50,7 +50,7 @@ namespace CuponesAPI.Controllers
                 await _context.SaveChangesAsync();
 
                 Log.Information($"Se llamo al endpoint <TipoCupon.Delete, {Id}>");
-                return Ok("Tipo de cupon eliminado correctamente");
+                return Ok("El tipo de cupon fue eliminado correctamente");
             }
             catch (Exception ex)
             {
@@ -80,7 +80,7 @@ namespace CuponesAPI.Controllers
                 if (tc is null)
                 {
                     Log.Error($"Error en el endpoint <TipoCupon.GetByID, {Id}>: El tipo de cupon no existe");
-                    return NotFound("El tipo de tipo de cupon no existe");
+                    return NotFound("El tipo de cupon no existe");
                 }
 
                 Log.Information($"Se llamo al endpoint <TipoCupon.GetByID, {Id}>");
