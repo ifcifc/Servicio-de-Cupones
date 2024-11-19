@@ -1,4 +1,4 @@
-# CuponesAPI- Grupo A
-
-Castellanos Ignacio
-Santiago Herr
+# **Gestor de ventas Grupo A**
+**Integrantes:**
+ - Castellanos, Ignacio ( **ifcifc** )
+ - Herr, Santiago ( **san-102** )
