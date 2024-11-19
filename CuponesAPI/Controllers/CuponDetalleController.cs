@@ -17,6 +17,12 @@ namespace CuponesAPI.Controllers
 
         public override async Task<IActionResult> Add(CuponDetalleModel model)
         {
+
+            if (model is null)
+            {
+                Log.Error($"Error en el endpoint <CuponDetalle.Add>: No se proporciono un modelo");
+                return BadRequest("No se proporciono un modelo");
+            }
             model.Articulo = null;
             //model.Id_Cupon = null;
             try

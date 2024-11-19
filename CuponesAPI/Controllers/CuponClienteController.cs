@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Serilog;
 using System.Runtime.InteropServices;
 using Common.Controllers;
+using System;
 
 namespace CuponesAPI.Controllers
 {
@@ -16,6 +17,12 @@ namespace CuponesAPI.Controllers
         private bool Any(string NroCupon) => _context.Cupones_Clientes.Any(e => e.NroCupon == NroCupon);
         public override async Task<IActionResult> Add(CuponClienteModel model)
         {
+
+            if (model is null)
+            {
+                Log.Error($"Error en el endpoint <CuponCliente.Add>: No se proporciono un modelo");
+                return BadRequest("No se proporciono un modelo");
+            }
             try
             {
                 model.Cupon = null;
@@ -138,9 +145,12 @@ namespace CuponesAPI.Controllers
         {
             try
             {
+                var date = DateTime.Now;
                 var tc = await _context.Cupones_Clientes.AsNoTracking()
                     .Include(x => x.Cupon)
-                    .Where(x => x.CodCliente.Equals(CodCliente))
+                    .Where(x => 
+                        x.CodCliente.Equals(CodCliente) &&
+                        date >= x.Cupon.FechaInicio && date <= x.Cupon.FechaFin)
                     .ToListAsync();
                 if (tc is null)
                 {
@@ -149,6 +159,8 @@ namespace CuponesAPI.Controllers
                 }
 
                 Log.Information($"Se llamo al endpoint <CuponCliente.GetAllByCodCliente, {CodCliente}>");
+
+                //if(tc.Count==0) return NotFound("El usuario no tiene cupones activos");
 
                 return Ok(tc);
             }

@@ -1,21 +1,22 @@
-﻿using CuponesAPI.Data;
-using Microsoft.AspNetCore.Mvc;
+﻿using Common.Interfaces;
 using Common.Models;
-using Common.Interfaces;
 using Common.Models.DTO;
+using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace CuponesAPI.Controllers
 {
     [Route("api/[controller]")]
-    [ApiExplorerSettings(IgnoreApi = true)]
     [ApiController]
-    public class LoginController : Controller
+    //Esta preparada para ser usada, pero oculta por que fue descartado del proyecto final
+    public class LoginController<T> : ControllerBase where T : DbContext
     {
-        private readonly DbAppContext _context;
-        private readonly IHashPasswordService _hashPasswordService;
-        private readonly IJwtTokenService _jwtTokenService;
+        protected readonly T _context;
+        protected readonly IHashPasswordService _hashPasswordService;
+        protected readonly IJwtTokenService _jwtTokenService;
 
-        public LoginController(DbAppContext context, IHashPasswordService hashPasswordService, IJwtTokenService jwtTokenService)
+        public LoginController(T context, IHashPasswordService hashPasswordService, IJwtTokenService jwtTokenService)
         {
             _context = context;
             _hashPasswordService = hashPasswordService;
@@ -36,9 +37,9 @@ namespace CuponesAPI.Controllers
 
             var usuario = new UsuarioDTO()
             {
-                Nombre = "Alguien",
-                Email = "algo@mail.com",
-                ID_Usuario = 3
+                Nombre = "admin",
+                Email = "admin",
+                ID_Usuario = 0
             };
 
             string token = this._jwtTokenService.GenerarToken(usuario);

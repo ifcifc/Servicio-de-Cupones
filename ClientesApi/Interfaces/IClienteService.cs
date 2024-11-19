@@ -7,11 +7,11 @@ namespace ClientesApi.Interfaces
 {
     public interface IClienteService
     {
-        Task<string> SolicitarCupon(ClienteDTO clienteDTO);
+        Task<HttpResponseMessage> SolicitarCupon(ClienteDTO clienteDTO);
 
-        Task<string> QuemarCupon(string NroCupon);
+        Task<HttpResponseMessage> QuemarCupon(string NroCupon);
 
-        Task<ClienteDTO> ObtenerCliente(string NroCupon);
+        Task<ClienteDTO?> ObtenerCliente(string NroCupon);
         Task<string> ObtenerCuponesActivos(string CodCliente);
     }
 }

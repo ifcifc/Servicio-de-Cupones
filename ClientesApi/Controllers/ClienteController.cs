@@ -16,9 +16,9 @@ namespace ClientesApi.Controllers
 {
     public class ClienteController : BaseController<ClienteModel, DbAppContext>
     {
-        private readonly EmailService emailService; 
+        private readonly EmailService emailService;
         private IClienteService clienteService { get; set; }
-        public ClienteController(DbAppContext context, EmailService emailService, IClienteService clienteService) : base(context) 
+        public ClienteController(DbAppContext context, EmailService emailService, IClienteService clienteService) : base(context)
         {
             this.emailService = emailService;
             this.clienteService = clienteService;
@@ -157,20 +157,22 @@ namespace ClientesApi.Controllers
                     return NotFound("El cliente no existe");
                 }
 
-                string respuesta = await this.clienteService.SolicitarCupon(clienteDTO);
+                var respuesta = await this.clienteService.SolicitarCupon(clienteDTO);
                 Log.Information($"Se llamo al endpoint <SolicitudCupones.EnviarSolicitudCupon, {clienteDTO.ToString()}>");
+                var content = await respuesta.Content.ReadAsStringAsync();
+                if (respuesta.IsSuccessStatusCode) { 
+                    //Obtengo el cliente
+                    ClienteModel? clienteModel = _context.Clientes.Find(clienteDTO.CodCliente);
 
-                //Obtengo el cliente
-                ClienteModel? clienteModel = _context.Clientes.Find(clienteDTO.CodCliente);
+                    //convierto la respuesta en un JObject para obtener el NroCupon
+                    JObject jobj = JObject.Parse(content);
+                    var NroCupon = jobj["nroCupon"];
 
-                //convierto la respuesta en un JObject para obtener el NroCupon
-                JObject jobj = JObject.Parse(respuesta);
-                var NroCupon = jobj["nroCupon"];
-
-                //Envio el email
-                this.EnviarEmail(clienteModel.Email, "Solicitud de cupon", $"Se le a dado el cupon: {NroCupon}");
-
-                return Ok(respuesta);
+                    //Envio el email
+                    this.EnviarEmail(clienteModel.Email, "Solicitud de cupon", $"Se le a dado el cupon: {NroCupon}");
+                    return Ok(content);
+                }
+                return BadRequest(content);
             }
             catch (Exception ex)
             {
@@ -190,19 +192,21 @@ namespace ClientesApi.Controllers
 
             try
             {
+
                 ClienteDTO clienteDTO = await this.clienteService.ObtenerCliente(NroCupon);
-                ClienteModel? clienteModel = _context.Clientes.Find(clienteDTO.CodCliente);
-
-
-                string result = await this.clienteService.QuemarCupon(NroCupon);
+                var result = await this.clienteService.QuemarCupon(NroCupon);
                 Log.Information($"Se llamo al endpoint <SolicitudCupones.QuemarCupon, {NroCupon}>");
-               
-                //Envio el email
-                this.EnviarEmail(clienteModel.Email, "Quemar cupon", $"Se a quemado el cupon: {NroCupon}");
-                
+
+                if(result.IsSuccessStatusCode && clienteDTO is not null) 
+                {
+                    ClienteModel? clienteModel = _context.Clientes.Find(clienteDTO.CodCliente);
+                    //Envio el email
+                    this.EnviarEmail(clienteModel.Email, "Quemar cupon", $"Se a quemado el cupon: {NroCupon}");
+                    return Ok(await result.Content.ReadAsStringAsync());
+                }
                 
 
-                return Ok(result);
+                return BadRequest(await result.Content.ReadAsStringAsync());
             }
             catch (Exception ex)
             {
@@ -242,10 +246,10 @@ namespace ClientesApi.Controllers
 
         protected override bool Any(int id) => false;
 
-        private bool Any(string CodCliente) => _context.Clientes.Any(e => e.CodCliente==CodCliente);
+        private bool Any(string CodCliente) => _context.Clientes.Any(e => e.CodCliente == CodCliente);
 
 
-        private async void EnviarEmail(string email, string subject, string body) 
+        private async void EnviarEmail(string email, string subject, string body)
         {
             try
             {

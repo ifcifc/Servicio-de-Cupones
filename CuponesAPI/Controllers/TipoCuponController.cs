@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore.ChangeTracking;
 using Serilog;
 using System.Runtime.InteropServices;
 using Common.Controllers;
+using Common.Models.DTO;
 
 namespace CuponesAPI.Controllers
 {
@@ -17,6 +18,12 @@ namespace CuponesAPI.Controllers
         protected override bool Any(int id) => _context.Tipo_Cupon.Any(e => e.Id_Tipo_Cupon == id);
         public override async Task<IActionResult> Add(TipoCuponModel model)
         {
+            if (model is null)
+            {
+                Log.Error($"Error en el endpoint <TipoCupon.Add>: No se proporciono un modelo");
+                return BadRequest("No se proporciono un modelo");
+            }
+
             model.Id_Tipo_Cupon = 0;
 
             try

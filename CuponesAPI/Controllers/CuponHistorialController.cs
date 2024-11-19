@@ -16,6 +16,12 @@ namespace CuponesAPI.Controllers
         private bool Any(int Id_Cupon, string NroCupon) => _context.Cupones_Historial.Any(e => e.Id_Cupon == Id_Cupon && e.NroCupon == NroCupon);
         public override async Task<IActionResult> Add(CuponHistorialModel model)
         {
+
+            if (model is null)
+            {
+                Log.Error($"Error en el endpoint <CuponHistorial.Add>: No se proporciono un modelo");
+                return BadRequest("No se proporciono un modelo");
+            }
             //model.Cliente = null;
             model.FechaUso = DateTime.Now;
             try

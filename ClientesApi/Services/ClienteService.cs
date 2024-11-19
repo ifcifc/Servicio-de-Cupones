@@ -18,34 +18,28 @@ namespace ClientesApi.Services
             this.apiConnect = apiConnect;
         }
 
-        public async Task<string> SolicitarCupon(ClienteDTO clienteDTO)
+        public async Task<HttpResponseMessage> SolicitarCupon(ClienteDTO clienteDTO)
         {
             var respuesta = await this.apiConnect.FromApi("SolicitudCupones/AsignarCupon", clienteDTO);
 
-            var content = await respuesta.Content.ReadAsStringAsync();
+            //var content = await respuesta.Content.ReadAsStringAsync();
 
-            if (respuesta.IsSuccessStatusCode) 
-            {
-                return content;
-            }
+            /*if (respuesta.IsSuccessStatusCode) 
+            {*/
+                return respuesta;
+            /*}
 
-            throw new Exception(content);
+            throw new Exception($"QuemarCupon: {clienteDTO.ToString()}, {respuesta.ToString()}");*/
         }
 
-        public async Task<string> QuemarCupon(string NroCupon)
+        public async Task<HttpResponseMessage> QuemarCupon(string NroCupon)
         {
             var respuesta = await this.apiConnect.FromApi($"SolicitudCupones/QuemarCupon/{NroCupon}");
-            var content = await respuesta.Content.ReadAsStringAsync();
 
-            if (respuesta.IsSuccessStatusCode)
-            {
-                return content;
-            }
-
-            throw new Exception(respuesta.ToString());
+            return respuesta;
         }
 
-        public async Task<ClienteDTO> ObtenerCliente(string NroCupon)
+        public async Task<ClienteDTO?> ObtenerCliente(string NroCupon)
         {
             var respuesta = await this.apiConnect.FromApiGet($"CuponCliente/{NroCupon}");
 
@@ -63,7 +57,7 @@ namespace ClientesApi.Services
                 };
             }
 
-            throw new Exception(respuesta.ToString());
+            return null;
         }
 
         public async Task<string> ObtenerCuponesActivos(string CodCliente) 
@@ -71,12 +65,14 @@ namespace ClientesApi.Services
             var respuesta = await this.apiConnect.FromApiGet($"CuponCliente/GetAllByCodCliente/{CodCliente}");
 
             var content = await respuesta.Content.ReadAsStringAsync();
-
-            //Para que el json que devuelve sea legible
-            JArray jsonFormatted = JArray.Parse(content);
-            string prettyJson = jsonFormatted.ToString(Newtonsoft.Json.Formatting.Indented);
-
-            return prettyJson;
+            if (respuesta.IsSuccessStatusCode)
+            {
+                //Para que el json que devuelve sea legible
+                JArray jsonFormatted = JArray.Parse(content);
+                string prettyJson = jsonFormatted.ToString(Newtonsoft.Json.Formatting.Indented);
+                return prettyJson;
+            }
+            return content;
         }
 
     }

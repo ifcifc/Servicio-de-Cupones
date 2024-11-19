@@ -11,6 +11,13 @@ namespace CuponesAPI.Controllers
         protected override bool Any(int id) => _context.Articulos.Any(e => e.Id_Articulo == id);
         public override async Task<IActionResult> Add(ArticuloModel model)
         {
+
+            if (model is null)
+            {
+                Log.Error($"Error en el endpoint <Articulo.Add>: No se proporciono un modelo");
+                return BadRequest("No se proporciono un modelo");
+            }
+
             model.Id_Articulo = 0;
 
             try
@@ -48,9 +55,9 @@ namespace CuponesAPI.Controllers
                     return BadRequest("El articulo no existe");
                 }
 
-                var precio = await _context.Precios.Where(x => x.Id_Articulo == Id).FirstAsync();
+                /*var precio = await _context.Precios.Where(x => x.Id_Articulo == Id).FirstAsync();
 
-                precio.Precio = 0;
+                precio.Precio = 0;*/
 
                 tc.Activo = false;
 

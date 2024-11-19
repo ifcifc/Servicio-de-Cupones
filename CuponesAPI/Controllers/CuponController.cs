@@ -69,6 +69,31 @@ namespace CuponesAPI.Controllers
 
         public override async Task<IActionResult> Add(CuponModel model)
         {
+
+            if (model is null)
+            {
+                Log.Error($"Error en el endpoint <Cupon.Add>: No se proporciono un modelo");
+                return BadRequest("No se proporciono un modelo");
+            }
+
+            if (DateTime.Now >= model.FechaFin)
+            {
+                Log.Error($"Error en el endpoint <Cupon.Add>: No se puede añadir un cupon expirado");
+                return BadRequest("No se puede añadir un cupon expirado");
+            }
+
+            if (model.FechaInicio == model.FechaFin)
+            {
+                Log.Error($"Error en el endpoint <Cupon.Add>: La fecha de inicio y fin no pueden ser iguales");
+                return BadRequest("La fecha de inicio y fin no pueden ser iguales");
+            }
+
+            if (model.FechaInicio > model.FechaFin)
+            {
+                Log.Error($"Error en el endpoint <Cupon.Add>: La fecha de fin no puede ser menor a la fecha de inicio");
+                return BadRequest("La fecha de fin no puede ser mayor a la fecha de inicio");
+            }
+
             try
             {
                 //Para evitar errores al crear el nuevo cupon
@@ -86,12 +111,12 @@ namespace CuponesAPI.Controllers
                 await _context.Cupones.AddAsync(model);
                 await _context.SaveChangesAsync();
 
-                Log.Information($"Se llamo al endpoint <cupon.Add, {model.ToString()}>");
+                Log.Information($"Se llamo al endpoint <Cupon.Add, {model.ToString()}>");
                 return Ok(model);
             }
             catch (Exception ex)
             {
-                Log.Error($"Error en el endpoint <cupon.Add, {model.ToString()}>: {ex.Message}");
+                Log.Error($"Error en el endpoint <Cupon.Add, {model.ToString()}>: {ex.Message}");
                 return BadRequest($"Hubo un error: {ex.Message}");
             }
         }

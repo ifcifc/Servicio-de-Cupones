@@ -15,6 +15,12 @@ namespace CuponesAPI.Controllers
         protected override bool Any(int id) => _context.Precios.Any(e => e.Id_Precio == id);
         public override async Task<IActionResult> Add(PrecioModel model)
         {
+            if (model is null)
+            {
+                Log.Error($"Error en el endpoint <Precio.Add>: No se proporciono un modelo");
+                return BadRequest("No se proporciono un modelo");
+            }
+
             model.Id_Precio = 0;
             model.Articulo = null;
 
